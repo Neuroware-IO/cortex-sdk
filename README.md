@@ -57,6 +57,8 @@ In order to get credentials, users are first required to register their devices.
 One function to rule them all.
 
 ```js
+
+// The variables
 var user1_id = 1;
 var user2_id = 2;
 var email = "your-email";
@@ -66,11 +68,14 @@ var path = [20, 20];
 var another_example_path = [2, 0, 2, 0];
 var withdrawal_chain = "btc";
 
+// Unlock credentials from localStorage
 var credentials = cortex_sdk.credentials.get(uid, email, password);
 
+// Every API endpoint available for preparation
 var api_urls = ["deposit", "holding", "custody", "sweeping", "rebalance", "withdraw"];
 var api_request_type = 0; // 0 = Deposit, 1 = Holding, etc, etc ...
 
+// The basic workload required for every end point
 var unecrypted_workload = {
     uid: user1_id,
     apiKey: credentials.key,
@@ -81,6 +86,8 @@ var unecrypted_workload = {
     ts: new Date().getTime()
 };
 
+// The specific API request to be included within each workload
+// The array index matches the array index of the api_urls
 var api_requests = [
     {
         path: path,
@@ -158,8 +165,10 @@ var api_requests = [
     }
 ];
 
+// Link the URL endpoint to the specific api request requirements
 unecrypted_workload.request = api_requests[api_request_type];
 
+// The magic function that encrypts, sends and decrypts every end point ...
 cortex_sdk.actions.application.prepare(
     {uid: uid, email: email, password: password, workload: unecrypted_workload}, // Parameters for encrypting
     {url: api_urls[api_request_type]}, // Endpoint for request
