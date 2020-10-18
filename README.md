@@ -16,12 +16,14 @@ cortex_sdk.forms.rebalance();
 cortex_sdk.forms.withdraw();
 ```
 
-In order to utilize all other API end-points, a user must first register their current device, which will then enable that device to make authenticated API requests that sign unencrypted workloads using private cryptographic keys and then encrypt the workloads using public keys. API credentials are encrypted and stored within the local browser, which can only be unlocked using the correct email address and password. Once unlocked, the email address and password are also used in combination with the other credentials to create the private keys needed to sign and encrypt the workload.
+In order to utilize all other API end-points, a user must first register their current device, which will then enable that device to make authenticated API requests that sign unencrypted workloads using private cryptographic keys and then encrypt the workloads using public keys. API credentials are encrypted and stored within the local browser, which can only be unlocked using the correct email address and password. 
+
+Once unlocked, the email address and password are also used in combination with the other credentials to create the private keys needed to sign and encrypt the workload.
 
 The following function can be used to unlock stored credentials:
 
 ```
-cortex_sdk.credentials.get(uid = false, email = false, password = false)
+cortex_sdk.credentials.get(uid = 0, email = "full-email", password = "full-password")
 {
     var credentials = false;
     var encrypted_data = localStorage.getItem('cortex_api_credentials_user_' + uid);
@@ -59,21 +61,21 @@ var user1_id = 1;
 var user2_id = 2;
 var email = "your-email";
 var password = "your-password";
-var network_type = 'private';
+var network_type = "private";
 var path = [20, 20];
 var another_example_path = [2, 0, 2, 0];
 var withdrawal_chain = 'btc';
 
 var credentials = cortex_sdk.credentials.get(uid, email, password);
 
-var api_urls = ['deposit', 'holding', 'custody', 'sweeping', 'rebalance', 'withdraw'];
+var api_urls = ["deposit", "holding", "custody", "sweeping", "rebalance", "withdraw"];
 var api_request_type = 0; // 0 = Deposit, 1 = Holding, etc, etc ...
 
 var unecrypted_workload = {
     uid: user1_id,
     apiKey: "your-api-key",
-    email: bitcoin.crypto.sha256("your-email-address").toString('hex'),
-    password: bitcoin.crypto.sha256("your-password").toString('hex'),
+    email: bitcoin.crypto.sha256(email).toString('hex'),
+    password: bitcoin.crypto.sha256(password).toString('hex'),
     secret: credentials.secret,
     seed: credentials.seed,
     ts: new Date().getTime()
