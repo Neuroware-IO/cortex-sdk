@@ -64,7 +64,7 @@ var password = "your-password";
 var network_type = "private";
 var path = [20, 20];
 var another_example_path = [2, 0, 2, 0];
-var withdrawal_chain = 'btc';
+var withdrawal_chain = "btc";
 
 var credentials = cortex_sdk.credentials.get(uid, email, password);
 
@@ -73,7 +73,7 @@ var api_request_type = 0; // 0 = Deposit, 1 = Holding, etc, etc ...
 
 var unecrypted_workload = {
     uid: user1_id,
-    apiKey: "your-api-key",
+    apiKey: credentials.key,
     email: bitcoin.crypto.sha256(email).toString('hex'),
     password: bitcoin.crypto.sha256(password).toString('hex'),
     secret: credentials.secret,
