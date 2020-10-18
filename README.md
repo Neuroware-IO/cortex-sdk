@@ -16,7 +16,9 @@ cortex_sdk.forms.rebalance(); // Applied to forms with 'cortex-hot-rebalance-for
 cortex_sdk.forms.withdraw(); // Applied to forms with 'cortex-withdraw-custody-form' class
 ```
 
-In order to utilize all other API end-points, a user must first register their current device, which will then enable that device to make authenticated API requests that sign unencrypted workloads using private cryptographic keys and then encrypt the workloads using public keys. API credentials are encrypted and stored within the local browser, which can only be unlocked using the correct email address and password. 
+All forms other than `registration` utilize the `prepare` funnction and require `credentials`.
+
+In order to utilize encrypted API end-points, a user must first register their current device, which will then enable that device to make authenticated API requests that sign unencrypted workloads using private cryptographic keys and then encrypt the workloads using public keys. API credentials are encrypted and stored within the local browser, which can only be unlocked using the correct email address and password. 
 
 Once unlocked, the email address and password are also used in combination with the other credentials to create the private keys needed to sign and encrypt the workload.
 
