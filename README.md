@@ -6,7 +6,7 @@ Credence utilizes the `cortex_sdk.actions.application.prepare()` function for al
 
 By including the Cortex SDK in any HTML application, the following form functions will be automatically initiated:
 
-```
+```js
 cortex_sdk.forms.registration();
 cortex_sdk.forms.deposit();
 cortex_sdk.forms.holding();
@@ -22,7 +22,7 @@ Once unlocked, the email address and password are also used in combination with 
 
 The following function can be used to unlock stored credentials:
 
-```
+```js
 cortex_sdk.credentials.get(uid = 0, email = "full-email", password = "full-password")
 {
     var credentials = false;
@@ -56,7 +56,7 @@ In order to get credentials, users are first required to register their devices.
 ----------------------------------------
 One function to rule them all.
 
-```
+```js
 var user1_id = 1;
 var user2_id = 2;
 var email = "your-email";
@@ -168,3 +168,4 @@ cortex_sdk.actions.application.prepare(
         console.log('decrypted_response', decrypted_response);
     }
 );
+```
