@@ -7,13 +7,13 @@ Credence utilizes the `cortex_sdk.actions.application.prepare()` function for al
 By including the Cortex SDK in any HTML application, the following form functions will be automatically initiated:
 
 ```js
-cortex_sdk.forms.registration();
-cortex_sdk.forms.deposit();
-cortex_sdk.forms.holding();
-cortex_sdk.forms.custody();
-cortex_sdk.forms.sweeping();
-cortex_sdk.forms.rebalance();
-cortex_sdk.forms.withdraw();
+cortex_sdk.forms.registration(); // Applied to forms with 'cortex-new-api-user-form' class
+cortex_sdk.forms.deposit(); // Applied to forms with 'cortex-get-deposit-address-form' class
+cortex_sdk.forms.holding(); // Applied to forms with 'cortex-get-holding-address-form' class
+cortex_sdk.forms.custody(); // Applied to forms with 'cortex-get-deposit-address-form' class
+cortex_sdk.forms.sweeping(); // Applied to forms with 'cortex-sweep-deposit-addresses-form' class
+cortex_sdk.forms.rebalance(); // Applied to forms with 'cortex-hot-rebalance-form' class
+cortex_sdk.forms.withdraw(); // Applied to forms with 'cortex-withdraw-custody-form' class
 ```
 
 In order to utilize all other API end-points, a user must first register their current device, which will then enable that device to make authenticated API requests that sign unencrypted workloads using private cryptographic keys and then encrypt the workloads using public keys. API credentials are encrypted and stored within the local browser, which can only be unlocked using the correct email address and password. 
