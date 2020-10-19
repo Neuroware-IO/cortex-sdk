@@ -51,7 +51,10 @@ cortex_sdk.credentials.get(uid = 0, email = "full-email", password = "full-passw
 }
 ```
 
-In order to get credentials, users are first required to register their devices:
+In order to get credentials, users are first required to register their devices.
+
+`cortex_sdk.actions.client.register`
+------------------------------------
 
 ```js
 var user1_id = 1;
