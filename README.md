@@ -76,7 +76,8 @@ cortex_sdk.actions.client.register(
             && typeof client_user.key != 'undefined' // for demo / non-db
         )
         {
-            var seed = bitcoin.crypto.sha256(email + client_user.secret + client_user.uid + password).toString('hex');
+            var client_secrets = email + client_user.secret + client_user.uid + password;
+            var seed = bitcoin.crypto.sha256(client_secrets).toString('hex');
             var keys = cortex_sdk.keys(seed);
             var api_key = bitcoin.crypto.sha256(keys.public_key + hashed_password).toString('hex');
 
