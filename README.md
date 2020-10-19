@@ -51,7 +51,87 @@ cortex_sdk.credentials.get(uid = 0, email = "full-email", password = "full-passw
 }
 ```
 
-In order to get credentials, users are first required to register their devices.
+In order to get credentials, users are first required to register their devices:
+
+```js
+var user1_id = 1;
+var email = "your-email";
+var password = "your-password";
+cortex_sdk.actions.client.register(
+    {
+        email: sha256(email),
+        password: sha256(password)
+    },
+    user1_id,
+    "app_salt",
+    function(client_user)
+    {
+        if(
+            client_user
+            && typeof client_user.uid != 'undefined'
+            && typeof client_user.secret != 'undefined'
+            && typeof client_user.key != 'undefined' // for demo / non-db
+        )
+        {
+            var seed = bitcoin.crypto.sha256(email + client_user.secret + client_user.uid + password).toString('hex');
+            var keys = cortex_sdk.keys(seed);
+            var api_key = bitcoin.crypto.sha256(keys.public_key + hashed_password).toString('hex');
+
+            var settings = {
+                "url": "http://sinegy.neuroware.io/v1/api/auth/",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "uid": user1_id,
+                    "hashEmail": sha256(email),
+                    "hashPassword": sha256(password),
+                    "secret": client_user.secret,
+                    "apiKey": api_key,
+                    "pubKey": keys.public_key
+                })
+            };
+            jQuery.ajax(settings).done(function (response) 
+            {
+                if(response && typeof response.success != 'undefined' && response.success === true)
+                {
+                    var seed = response.rdata.seed;
+                    var secret = response.rdata.secret;
+                    var key = response.rdata.recoveryKey;
+                 
+                    // Items for UX
+                    var wallet_user = 
+                    {
+                        uid: client_user.uid,
+                        seed: seed,
+                        secret: secret,
+                        key: key
+                    }
+
+                    var credentials =
+                    {
+                        key: api_key,
+                        secret: client_user.secret,
+                        uid: client_user.uid,
+                        seed: wallet_user.seed
+                    };
+
+                    var user_to_store = {
+                        uid: client_user.uid,
+                        email: hashed_email,
+                        password: hashed_password,
+                        secret: client_user.secret,
+                        key: client_user.key,
+                        pub: keys.public_key
+                    };
+                }
+            });
+        }
+    }
+);
+```
 
 
 `cortex_sdk.actions.application.prepare`
