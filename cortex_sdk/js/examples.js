@@ -103,7 +103,7 @@ var cortex_sdk_callbacks =
                         alert_text+= "\nBTC TXID: " + response[i].btc.message;
                     }
                     alert_text+= "\n";
-                    alert_text+= "ETH Address: " + response[i].eth.address;
+                    alert_text+= "\nETH Address: " + response[i].eth.address;
                     if(response[i].eth.txid)
                     {
                         alert_text+= "\nETH TXID: " + response[i].eth.txid;
@@ -113,7 +113,7 @@ var cortex_sdk_callbacks =
                         alert_text+= "\nETH TXID: " + response[i].eth.message;
                     }
                     alert_text+= "\n";
-                    alert_text+= "XRP Address: " + response[i].xrp.address;
+                    alert_text+= "\nXRP Address: " + response[i].xrp.address;
                     if(response[i].xrp.txid)
                     {
                         alert_text+= "\nXRP TXID: " + response[i].xrp.txid;
