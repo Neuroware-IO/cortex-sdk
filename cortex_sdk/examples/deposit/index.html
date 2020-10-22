@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Deposit Crypto</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../js/aes.js'></script>
+    <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../js/examples.js'></script>
+    <script type='text/javascript' src='../../js/jquery.js'></script>
+</head>
+<body>    
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Generate Deposit Addresses</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- DEPOSIT FORM -->
+                        <form class="form-horizontal cortex-get-deposit-address-form">
+                        
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="deposit" />
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-user-id" class="col-sm-4 control-label">
+                                    User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-path" class="col-sm-4 control-label">
+                                    Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-path" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-hot-new-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-email" class="col-sm-4 control-label">
+                                    Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-password" class="col-sm-4 control-label">
+                                    Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-hot-new-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-xl btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sweep</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        <form class="form-horizontal cortex-sweep-deposit-addresses-form">
+
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="sweeping" />
+
+                            <div class="form-group">
+                                <label for="cortex-sweep-user-id" class="col-sm-4 control-label">
+                                    Agent ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-sweep-dnkey" class="col-sm-4 control-label">
+                                    DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-dnkey" class="form-control cortex-form-appkey1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-sweep-app-dnkey" class="col-sm-4 control-label">
+                                    Application Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-app-dnkey" class="form-control cortex-form-mskeyapp" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-sweep-trust-dnkey" class="col-sm-4 control-label">
+                                    Trustee Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-trust-dnkey" class="form-control cortex-form-mskeytrust" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-sweep-user-ids" class="col-sm-4 control-label">
+                                    User IDs
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-user-ids" class="form-control cortex-form-user-ids" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-sweep-paths" class="col-sm-4 control-label">
+                                    Paths
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-paths" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cortex-sweep-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-sweep-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-sweep-email" class="col-sm-4 control-label">
+                                    Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-sweep-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-sweep-password" class="col-sm-4 control-label">
+                                    Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-sweep-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-xl btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
+</body>
+</html>

@@ -1041,7 +1041,10 @@ var cortex_sdk =
                 var action = 'GENERATING';
                 if(api_options.url == 'withdraw') action = 'WITHDRAWING';
                 if(api_options.url == 'sweeping') action = 'SWEEPING';
-                cortex.ux.loader(true, action);
+                if(typeof cortex == 'object')
+                {
+                    cortex.ux.loader(true, action);
+                }
                 cortex_sdk.actions.application.encrypt(
                     {
                         uid: encrypt_options.uid, 
@@ -1709,6 +1712,7 @@ var cortex_sdk =
                     {
                         e.preventDefault();
                         var id = parseInt(this.dataset.id);
+                        if(!id) id = this.getElementsByClassName(cortex_sdk.classes.userid)[0].value
                         var email = this.getElementsByClassName(cortex_sdk.classes.email)[0].value;
                         var password = this.getElementsByClassName(cortex_sdk.classes.password)[0].value;
                         if(id > 0 && email && password)
@@ -2545,7 +2549,7 @@ var cortex_sdk =
                                             typeof cortex_sdk_callbacks == 'object'
                                             && typeof cortex_sdk_callbacks[callback] != 'undefined'
                                         ){
-                                            cortex_sdk_callbacks[callback](true);
+                                            cortex_sdk_callbacks[callback](client_user.uid);
                                         }
                                         else
                                         {
