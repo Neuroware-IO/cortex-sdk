@@ -6,8 +6,8 @@ CORTEX SDK
 
 var cortex_sdk_config = {
     apis: {
-        wallet: 'http://157.230.244.195/api/',
-        wallets: 'https://sinegy.neuroware.io/api/'
+        wallets: 'http://157.230.244.195/api/',
+        wallet: 'https://sinegy.neuroware.io/v1/api/'
     },
     currencies: [
         {
@@ -1183,34 +1183,28 @@ var cortex_sdk =
             },
             register: function(options = {email: false, password: false}, uid = 0, salt = false, callback = false)
             {
-                // This will eventually be replaced with an API end-point from client application ...
-                if(
-                    typeof options.email != 'undefined'
-                    && typeof options.password != 'undefined'
-                )
+                var settings = {
+                    "url": "https://sinegy.neuroware.io/v1/sinegy/register/",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "uid": uid,
+                        "hashEmail": options.email,
+                        "hashPassword": options.password
+                    }),
+                };
+                jQuery.ajax(settings).done(function (res) 
                 {
-                    // Use email address to get or add new User ID ...
-                    if(!uid || uid < 1) uid = 1;
-                    if(!salt) salt = 'application_salt';
-
-                    // The secret needs to be based on something fixed ...
-                    var secret = bitcoin.crypto.sha256(salt + uid).toString('hex');
-                    var recovery_key = bitcoin.crypto.sha256(salt + options.password).toString('hex');
-                    var response = 
+                    var response = false;
+                    if(res && typeof res.success != 'undefined' && res.success === true)
                     {
-                        uid: uid,
-                        secret: secret,
-                        key: recovery_key
-                    };
-                    if(typeof callback == 'function')
-                    {
-                        callback(response);
+                        response = res.rdata;
                     }
-                    else
-                    {
-                        return response;
-                    }
-                }
+                    callback(response);
+                });
             },
             verify: function(options = {uid: 0, email: false, password: false}, salt = false, callback = false)
             {
@@ -2062,6 +2056,15 @@ var cortex_sdk =
                     var aid = form.getElementsByClassName(cortex_sdk.classes.accountid)[0].value;
                     var path = form.getElementsByClassName(cortex_sdk.classes.path)[0].value;
                     
+                    var return_addresses = false;
+                    if(
+                        typeof form.getElementsByClassName('cortex-return-addresses')[0] != 'undefined'
+                        && form.getElementsByClassName('cortex-return-addresses')[0].value
+                    )
+                    {
+                        var return_addresses = true;
+                    }
+                    
                     // The network and path would be be filled-in by application ...
                     var network_type = form.getElementsByClassName(cortex_sdk.classes.network)[0].value;
                     var callback_function = form.getElementsByClassName(cortex_sdk.classes.callback)[0].value;
@@ -2152,6 +2155,7 @@ var cortex_sdk =
                                                     seed: credentials.seed,
                                                     ts: now,
                                                     request: {
+                                                        return_addresses_only: return_addresses,
                                                         network: network_type,
                                                         agent: {
                                                             dnkey: agent_dnkey,
@@ -2194,6 +2198,17 @@ var cortex_sdk =
                                                             ){
                                                                 // FOR UX
                                                                 response.aid = aid;
+                                                                holding_response.success = true;
+                                                                holding_response.message = response;
+                                                                callback(holding_response);
+                                                            }
+                                                            else if(
+                                                                response
+                                                                && typeof response.btc != 'undefined'
+                                                                && typeof response.eth != 'undefined'
+                                                                && typeof response.xrp != 'undefined'
+                                                            )
+                                                            {
                                                                 holding_response.success = true;
                                                                 holding_response.message = response;
                                                                 callback(holding_response);
@@ -2860,6 +2875,7 @@ var cortex_sdk =
                                     seed: credentials.seed,
                                     ts: now,
                                     request: {
+                                        close_xrp: false,
                                         network: network_type,
                                         agent: {
                                             dnkey: agent_dnkey
@@ -2886,7 +2902,7 @@ var cortex_sdk =
                                         ){
                                             var response = decrypted_response.message;
                                             // FOR UX
-                                            response.aid = aid;
+                                            response.aid = uid;
                                             sweeping_response.success = true;
                                             sweeping_response.message = response;
                                             callback(sweeping_response);
