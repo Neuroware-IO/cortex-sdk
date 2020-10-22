@@ -1,6 +1,6 @@
-## Credence Hot Wallet API
+## Credent Hot Wallet API
 
-## Sinegy API Documentation
+The Credent Hot Wallet API is used by Neuroware's [Cortex SDK](../../../README.md) for [Credence](http://credence.app).
 
 ### Postman Collection
 
