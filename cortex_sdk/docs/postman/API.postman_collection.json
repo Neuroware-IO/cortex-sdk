@@ -1,0 +1,960 @@
+{
+	"info": {
+		"_postman_id": "c7fc1974-5eef-4c98-89bb-8d2f8157da92",
+		"name": "sinegyAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "shamir/share/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"secret\":\"test\",\"shared\":\"3\",\"needed\":\"3\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/shamir/share/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"shamir",
+						"share",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "shamir/combine/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    \"801a60bdcc3b20cfbacd0\",\n    \"80238d2d282eaad7add07\",\n    \"8039fd97a412ba1e471a3\"\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/shamir/combine/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"shamir",
+						"combine",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hd/crypto/private/create/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"seed\":\"0f340b5c04a21485eaebbbb55dcd59bd20b5a2df45659189864bef262ae52513\",\"path\":[10, 66]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/hd/crypto/private/create/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"hd",
+						"crypto",
+						"private",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hd/bitcoin/private/create/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"seed\":\"0f340b5c04a21485eaebbbb55dcd59bd20b5a2df45659189864bef262ae52513\",\"path\":[10, 66],\"network\":\"private\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/hd/bitcoin/private/create/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"hd",
+						"bitcoin",
+						"private",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hd/ripple/private/create/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"seed\":\"0f340b5c04a21485eaebbbb55dcd59bd20b5a2df45659189864bef262ae52513\",\"path\":null,\"network\":\"private\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/hd/ripple/private/create/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"hd",
+						"ripple",
+						"private",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hd/ethereum/private/create/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"seed\":\"0f340b5c04a21485eaebbbb55dcd59bd20b5a2df45659189864bef262ae52513\",\"path\":[10, 66],\"network\":\"private\",\"lookup\":true}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/hd/ethereum/private/create/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"hd",
+						"ethereum",
+						"private",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hd/private/create/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"seed\":\"0f340b5c04a21485eaebbbb55dcd59bd20b5a2df45659189864bef262ae52513\",\"path\":[10, 66],\"network\":\"private\",\"lookup\": true}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/hd/private/create/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"hd",
+						"private",
+						"create",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eth/address/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"address\":\"0xcaa97f52b46cab0f8fda17543bea4a6d71a6d72b\",\"network\":\"private\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/eth/address/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"eth",
+						"address",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eth/addresses/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"addresses\": [\n        \"0xcaa97f52b46cab0f8fda17543bea4a6d71a6d72b\",\n        \"0x25ea0ecaa547f525f6e9809f773b5e076cefcc07\",\n        \"0xd93e0208b854c4d533ecb4a72f9c34b734a4edaa\"\n        ],\n    \"network\":\"private\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/eth/addresses/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"eth",
+						"addresses",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eth/contract/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"blockauth\",\n    \"address\":\"0x4f8a32b06f8dd1eadb6c24d54dfe3a111fd3ae59\",\n    \"network\":\"private\",\n    \"method\":\"getUserByUsername\",\n    \"methodValue\": \"mark.neuroware.io\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/eth/contract/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"eth",
+						"contract",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "xrp/address/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"address\":\"rBUm162iUG9vAkeKoN3oKWRu89MwFMD9hn\",\"network\":\"private\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/xrp/address/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"xrp",
+						"address",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "xrp/addresses/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"addresses\": [\"rBUm162iUG9vAkeKoN3oKWRu89MwFMD9hn\",\"rBUm162iUG9vAkeKoN3oKWRu89MwFMD9hn\"],\n    \"network\":\"private\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/xrp/addresses/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"xrp",
+						"addresses",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "btc/address/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"address\":\"mfngMSrpt3jY3ABMWW7q568fVMupyTghL7\",\"network\":\"private\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/btc/address/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"btc",
+						"address",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "btc/addresses/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"addresses\": [ \n        \"mfngMSrpt3jY3ABMWW7q568fVMupyTghL7\",\n        \"mfngMSrpt3jY3ABMWW7q568fVMupyTghL7\"\n    ],\n    \"network\":\"private\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/btc/addresses/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"btc",
+						"addresses",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/auth/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":2,\n\t\"hashEmail\":\"14fe83449bae82481156eddb01368bdf40e00aee107cf82ba43509be56c91763\",\n\t\"hashPassword\":\"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\",\n\t\"secret\":\"560feffc9961aedfa761b371b7c5d49d0345c66e4e38a11a0146d9887f4bf8aa\",\n\t\"apiKey\":\"44c5bd9046e948ff87a4d9702d2637e6d416f48ad4c4b4ddb7ea54a9f653d5b4\",\n\t\"pubKey\":\"02d11991146b541e737bada049b3265e1505e6ace5b1df8c4f31db6260ef7eb0f1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/api/auth/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"api",
+						"auth",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/decrypt/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":2,\n\t\"workload\":\"116181ecd59b8db18c4fe92891f2f6ee68bc64b89fa8bf94d7556c8075d4c225d725545f59d63deacc7ea343ff0de33183e09047f720197356e5f28fa01db8b6435607dc9c62e90b25a042793055377d15d9cf4e95abba4bca49283a20e02d3863f844e61804cc158b0ff25cd8a21d15098139d065bfd6b94138ca92cca7d0d098600167c6e390eb48bc5d043c5b4cb409e3069140b733f6a3cabec58cb098a8f6f97d107a8f6ac7048213f66503fa496bc9f0fd0a13f199db75566d56e23c8638cd2b9fe1d80aedcf048fc19f320547cadfff4c6a1b0463b6d964c0247bb6fd67128271fcbada786a5d94fed68e02db409d11f50e1651250f194313bc495774b060f69763b5842e24f822875adb70f87c043b6a6ef3d56873a34fbccda28566a7481d7c628e1eb58869f6e44f190e284c13acc11e0d4d9007060bdd8650f6197e6ce2f992485bf38bbe67f21729258fe68715a564623dca92cafd4097011acb24b821e207b839b2149446861c56f215d244df88f0cc0212c4b1362dfdfdfdce1cf50e415fab72e322e1972fe9fc41db3f8f4865f5f3ba6b84e9010c66ef06dcd42eca25cf29f7df331f0ed2e4991ab9d20a7056242673df8107a677140d2701ac0edb6f1944b99116e1b751bffa4f1d161995c5409b1ef856c3\",\n\t\"signature\":\"IJ0wKTa9yVNQTLiFOsgFa9082tko1LP8XyKpELu3W4frelWiULC1NKtg1tL33LLU80sc4d36qhUrtgCVZzNFT0Q=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/api/decrypt/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"api",
+						"decrypt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/deposit/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":1,\n\t\"workload\":\"9304a2d93c6d419ad8ed9040655ce2b84897b2f3dd515e55d9b6a81d1a2390909794cf52f2b515225d29d4070fc016ad6038a4195f5dd3c0d61f14cdfaa0d16cdba5e80cb81e0e7cd2efa98af78b8d75f3ee9d04664e0d4445ab378f6fa5118cc7d8f3cd18b65eb8ec919640859453aeb9a40d01a5890c0c6b401c0028c3ef264eaf9ba9d5f84f97d1c7e603a94c59c21a01228c66a2d8a4fbfd0f02d277f98f561769a929d20740c7bc686524b00c2388da96e9ca27e70cf51438a6b0191926e9b1e2a020af79fe329a0a4f48e749130d553d4953d79fc1dc60114e33b58b563eb268923f704275c1d0998878805fb5b878f2d06768bd1d78b5c20b6fe50f0260ba313e665a9131f35c47507f392c17c82f009faaf1a18f5cdc1d79d1b38350d639ddbfb3c6b4d96ce566680313b903077a8b232427873199ca0d0be52c716ec5c4910ff18e5710d4d3fda0f081ddc4bbc76573ba25864177d05588d5f6122e4da83875adb0c5f2f7fbc1795ce627c358802f7bc8abe5db576b451d2d641be6ae9055ed145a0db7c49d42c2b41e62c512aba9c4b339f8fdb5f21958d75a6eca38b4e519a778b6c3bbb0a82fc86e89890c4807a9246b4e71ce65660a354e55607ed8d1015c824294c016b21306e34330171de3af11e4b7\",\n\t\"signature\":\"IPGVnOVdypdyMmmyY6GQfX1jKsDkWJpBnSS2V5k2Cd1VG2wTDTkZnnyfwCvFx4vAtZNcoKLy9Kr+pUKxJlMqzpQ=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/deposit/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"deposit",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/withdraw/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":\"2\",\n\t\"workload\":\"116181ecd59b8db18c4fe92891f2f6ee68bc64b89fa8bf94d7556c8075d4c225d725545f59d63deacc7ea343ff0de33183e09047f720197356e5f28fa01db8b6435607dc9c62e90b25a042793055377d15d9cf4e95abba4bca49283a20e02d3863f844e61804cc158b0ff25cd8a21d15098139d065bfd6b94138ca92cca7d0d098600167c6e390eb48bc5d043c5b4cb409e3069140b733f6a3cabec58cb098a8f6f97d107a8f6ac7048213f66503fa496bc9f0fd0a13f199db75566d56e23c8638cd2b9fe1d80aedcf048fc19f320547cadfff4c6a1b0463b6d964c0247bb6fd67128271fcbada786a5d94fed68e02db409d11f50e1651250f194313bc495774b060f69763b5842e24f822875adb70f87c043b6a6ef3d56873a34fbccda28566a7481d7c628e1eb58869f6e44f190e284c13acc11e0d4d9007060bdd8650f6197e6ce2f992485bf38bbe67f21729258fe68715a564623dca92cafd4097011acb24b821e207b839b2149446861c56f215d244df88f0cc0212c4b1362dfdfdfdce1cf50e415fab72e322e1972feaf545d1338b4962f7f3b96f84e9010c66ef06dcd42eca25cf38ffcf790716b8f7850eece7473b56636826c8811ca6611413301cad00dd611952b99116e1b751a8e64f0b16088dc8599c09f8119c1f5a010ddc0486ecf1cb4228c93d255de923d301415502d35272f699508d1008ae7038b27c2492d2f6ac8f4da25a6fe3b15afb2b551924c15aa8b430935591abf49735540a8f8da09566b3a9399b7ba98eec33f78517e8bf\",\n\t\"signature\":\"H70WYLItKDDA19kBskoPlrnqEuLjZvlFBtN6UEL8XiolSkgl0UtKUqW6ww0vc79T67IxLK8xb7qsPgKZq0sw4E0=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/withdraw/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"withdraw",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/holding/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":1,\n\t\"workload\":\"9304a2d93c6d4189c5eddd126d67ee8a0fd4b2abc7065704d0e3f11e4f7293c2c4c1c805a0e516750b2a805607c01bad316da218040d8994871f44ccaaa686688ca9eb53bd1b5e7a87e9aedbf1db8c74f2bdcf16284e440b41af3ac439a51f99978cf39b48b309beea92c141d49656fdbdf85e5ba4880b5668411e097b96bc2219a8cff786a418c08595bb00a84d02904e532ddd6aa58fa5f8ff5e558121b894564b2aaa3bd61b45ccec366527f40d73d4dccae8ca2eeb57f61339f7bf4d1221beb6e6f122aa2faa63cb5f4a18e14a465b55384d50d79dc1d4301b1f65e7da033db56fc46c754675978199d16a945feaff68e5d6612ff31d20a6970c6bb20f5661b732306f5fc836a15b17022d6c7c10982c03ccfcf6a1dc08d24872d6e0d302d238dcb8e1c2b48d3bb630695542ea55547d8f76232186618bd20d54a23a70299bc4cf18a1de544687d0fff3a781de9eedce6470e774dc11258354d8d4a5127b48fe6b24fbb1c4f1f0acce2552e627ce5782252b9cafe089076a124a7d351ae3a2974ef414025ce18d8e4ec3b21962ce17a9a4c7b63fe6ebebb51a48c35c7f9b76edfd12e462bb95f6b9bb28993187db104405bf3f7c077fd626711d324c162e60d8994d479552c09b57a6504eaa1d2b1004f8a344f8b89e8e6102864f7868d66cd3d9e6326e9eb509d9b5778347e6af2a3a70524a033fc70b1fe79dab89e302c359075f49dcc232f554f26965a630d4690275eaf8b41d65dad9368868dea5860af861cdedf70473deb649e12390764e8f637a9b6e2adaeda41148d011bd40082338bdb8589adf2d76c78f5b287a88b1df68aca2b7db61e09f9e524516c041894f65261731b5e5d547e58b31b3b870a6cc98fd3bbbef84ea6e0eb3c2c84160daf9e5f2aa6bfb16a40bc755c35bad14e6715066b88b76db92c19451f589a98863245c0c9e722122f7807518b7f08c9d1580014861eebb4bc29d59216f0a324c8430a37a340e37693f8f9b1d0c63d1302d535b1f9d04a716d2b8624ae155c5fe39e0bf758525885ce89ec3d54c16500098fcb423982830a1c4e8bf3a1cf2afb67b02420d017671a92fb78b21c7d94062b0498cdd77e3f208dcfa07f15eb78cf4675c53790e3cb3e1cb6e4da0896c4e1b5723259c6ce035c2ebf9c593f67931a59213f09c79f9b404777ca9cfa435e4a11225d07ec34b437e32b4728a5529c919e52a9c96cd0f2ce344c7dcf59670c1d5c3099ce134c30a0daa9e8c752ae77d79a967c08672c7c91be757838bab0ce492bcee18b0f6024ffc894239d58907e630c4fb4f20cc84214d99694ccae733abdc1b3947085a01471abf5a692ba07f2fdbcc0a633c29858ed752c2a9af6bd3778114959e677ff797e2ff3d1832d37c537a67a0bbfc4e915b08ec34538e7e25c2483905327fcddfa63e7932a2add72bad3cbe7421e5b0f6732e1ef93747468b86b83ac648eec0a17cf65b0560ec20f883e10b2db3f8e3e6d11df51a3174092aa0fa02d28bf00a020b16d752d618\",\n\t\"signature\":\"IGZ4VOxyVoYH58w6tNo36zr6K50cXQByLNnKawU6AsI3bAff/RcJ5dJ0DJIHbsuFpgUferQJfnGAfqakA/1l+Eg=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/holding/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"holding",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/custody/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\": \"1\",\n    \"workload\": \"9304a2d93c6d4189c5eddd126d67ee8a0fd4b2abc7065704d0e3f11e4f7293c2c4c1c805a0e516750b2a805607c01bad316da218040d8994871f44ccaaa686688ca9eb53bd1b5e7a87e9aedbf1db8c74f2bdcf16284e440b41af3ac439a51f99978cf39b48b309beea92c141d49656fdbdf85e5ba4880b5668411e097b96bc2219a8cff786a418c08595bb00a84d02904e532ddd6aa58fa5f8ff5e558121b894564b2aaa3bd61b45ccec366527f40d73d4dccae8ca2eeb57f61339f7bf4d1221beb6e6f122aa2faa63cb5f4a18e14a465b55384d50d79dc1d4301b1f65e7da033db56fc46c754675978199d16a945feaff68e5d6612ff31d20a6970c6bb20f5661b732306f5fc836a15b17022d6c7c10982c03ccfcf6a1dc08d24872d6e0d302d238dcb8e1c2b48d3bb630695542ea55547d8f76232186618bd20d54a23a70299bc4cf18a1de544687d0fff3a781de9eedce6470e774dc11258354d8d4a5127b48fe6b24fbb1c4f1f0acce2552e627ce5782252b9cafe089076a124a7d351ae3a2974ef414025ce18d8e4ec3b21960ca15aeaec0b93be7efebb51a48c35c7f9b76edfd12e462bb95f6b9bb28993187db104405bf3f7c077fd6237813394147362181df425c8009d88314bb4112af5630071efdad41fce492cf2a418617286ecc7fd8ddb07d3e8fe546888925de22e4816c2d7a4066242caa0000f0d1e9c8e237c47251215696c934c119ed\",\n    \"signature\": \"IDYD3nDBU4E+NfKxRg2Jy+JeJBwKwp0rogv++fgPes/cds9VMch016sgQhDHQHIw77W8W1N/YS0ywgpqB4VUa6k=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/custody",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"custody"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/sweeping/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":1,\n\t\"workload\":\"9304a2d93c6d4189c5eddd126d67ee8a0fd4b2abc7065704d0e3f11e4f7293c2c4c1c805a0e516750b2a805607c01bad316da218040d8994871f44ccaaa686688ca9eb53bd1b5e7a87e9aedbf1db8c74f2bdcf16284e440b41af3ac439a51f99978cf39b48b309beea92c141d49656fdbdf85e5ba4880b5668411e097b96bc2219a8cff786a418c08595bb00a84d02904e532ddd6aa58fa5f8ff5e558121b894564b2aaa3bd61b45ccec366527f40d73d4dccae8ca2eeb57f61339f7bf4d1221beb6e6f122aa2faa63cb5f4a18e14a465b55384d50d79dc1d4301b1f65e7da033db56fc46c754675978199d16a945feaff68e5d6612ff31d20a6970c6bb20f5661b732306f5fc836a15b17022d6c7c10982c03ccfcf6a1dc08d24872d6e0d302d238dcb8e1c2b48d3bb630695542ea55547d8f76232186618bd20d54a23a70299bc4cf18a1de544687d0fff3a781de9eedce6470e774dc11258354d8d4a5127b48fe6b24fbb1c4f1f0acce2552e627ce5782252b9cafe089076a124a7d351ae3a2974ef414025ce18d8e4ec3b21960c417abafc6b73dece7ebb51a48c35c7f9b76edfd12e462bb95f6b9bb28993187db104405bf3f7c077fd626711d324c162e60d8994d479552c09b57a6504eaa1d2b1004f8a344f8b89e8e6102861e7639d2789f82e9657895fc56828e628157a885692f3b5962233beb1e0ea0c9eb83fd749c3807694584d122c14afe7b69bc36ca64365f9dd58a5e69feb85ab67bd681ba35ea1e8697f4024ffeb521a11e847151e42035925775b7c0ae327e9054ed7c4c4a78e2b8\",\n\t\"signature\":\"ILQZaDfBbSV8ZBfesQ6VERlnlN+XHSIQVe82GBazp/PTSXfmP6by2MYj/yXkue0/DxBCo6Anv2ZL8QyGOtMEhQ0=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/sweeping/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"sweeping",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/rebalance",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":1,\n\t\"workload\":\"9304a2d93c6d4189c5eddd126d67ee8a0fd4b2abc7065704d0e3f11e4f7293c2c4c1c805a0e516750b2a805607c01bad316da218040d8994871f44ccaaa686688ca9eb53bd1b5e7a87e9aedbf1db8c74f2bdcf16284e440b41af3ac439a51f99978cf39b48b309beea92c141d49656fdbdf85e5ba4880b5668411e097b96bc2219a8cff786a418c08595bb00a84d02904e532ddd6aa58fa5f8ff5e558121b894564b2aaa3bd61b45ccec366527f40d73d4dccae8ca2eeb57f61339f7bf4d1221beb6e6f122aa2faa63cb5f4a18e14a465b55384d50d79dc1d4301b1f65e7da033db56fc46c754675978199d16a945feaff68e5d6612ff31d20a6970c6bb20f5661b732306f5fc836a15b17022d6c7c10982c03ccfcf6a1dc08d24872d6e0d302d238dcb8e1c2b48d3bb630695542ea55547d8f76232186618bd20d54a23a70299bc4cf18a1de544687d0fff3a781de9eedce6470e774dc11258354d8d4a5127b48fe6b24fbb1c4f1f0acce2552e627ce5782252b9cafe089076a124a7d351ae3a2974ef414025ce18d8e4ec3b21962cb13abafc6b331e4e9ebb51a48c35c7f9b76edfd12e46fb684e2bd9621da67c4c5014800812477492ad67d7019304b5138399498575b9f5989834fe9414ea845240114a8e011f8ad9ece7c4f9e18787fd160d8c1b07d3e96f64190d32ede79f88b6e3e6752293f26a61443f0c4aa86f63fde7d51214bd5d526d00cb2243eec249127294991869e5e50edff1db86998d78463a04b91d1b54d55f3b371f432be3204e67f6ced267bfddab1333ecd18b2520f7872feb71196db3176a089556e638aa0ce7ffcf99b986ce3cd8a470207dc459b5764610303f8b09011f99d36a1bb74af91d8f62bbcf29cfc7d19f885ce0c1f8bf7b0faae73f30da61dd250df07a140f8264667a48f7d9c868a9a03d897a59667254641d3316277f5c92c0cb9af8289\",\n\t\"signature\":\"IIZwP0JGU8Bq6cplI5QsyZ8I75J3IdBpW5q7FQD5l5jOC4jhEF2Y+cRD+jypGdaD3dx97NcVjWwQDixcPMAu2j8=\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:3000/api/rebalance/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"rebalance",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sinegy/verify/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":2,\n\t\"hashEmail\":\"14fe83449bae82481156eddb01368bdf40e00aee107cf82ba43509be56c91763\",\n\t\"hashPassword\":\"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/sinegy/verify/",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"sinegy",
+						"verify",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dnkey/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"host\":\"app.neuroware.io\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://157.230.244.195/dnkey",
+					"protocol": "http",
+					"host": [
+						"157",
+						"230",
+						"244",
+						"195"
+					],
+					"path": [
+						"dnkey"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

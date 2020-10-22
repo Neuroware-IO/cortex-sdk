@@ -1,6 +1,6 @@
 ## Cortex SDK
 
-The Cortex SDK is used to communicate with the Credent Hot Wallet.
+The Cortex SDK is used to communicate with the Credent [Hot Wallet API](cortex_sdk/docs/api/README.md).
 
 Credence utilizes the `cortex_sdk.actions.application.prepare()` function for all interactions other than __registration__, which is the only API end-point that does not use encrypted workloads.
 
