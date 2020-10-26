@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Rebalance</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../js/aes.js'></script>
+    <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../js/examples.js'></script>
+    <script type='text/javascript' src='../../js/jquery.js'></script>
+</head>
+<body>    
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Rebalance Accounts</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- REBALANCE FORM -->
+                        <form class="form-horizontal cortex-hot-rebalance-form">
+                            
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="rebalance" />
+                            
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-status" class="col-sm-4 control-label">
+                                    Status
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-hot-rebalance-staus" class="form-control cortex-form-check">
+                                        <option value="">-- Select Method --</option>
+                                        <option value="true">Check Only</option>
+                                        <option value="">Perform</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-username" class="col-sm-4 control-label">
+                                    Agent DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-username" class="form-control cortex-form-appkey1" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-hot-rebalance-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-ms-dnkey-app" class="col-sm-4 control-label">
+                                    App Holding Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-ms-dnkey-app" class="form-control cortex-form-mskeyapp" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-ms-dnkey-trustee" class="col-sm-4 control-label">
+                                    Trustee Holding Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-ms-dnkey-trustee" class="form-control cortex-form-mskeytrust" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-ms-path-holding" class="col-sm-4 control-label">
+                                    Holding Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-ms-path-holding" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-ms-dnkey-app" class="col-sm-4 control-label">
+                                    App Withdrawal Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-ms-dnkey-app" class="form-control cortex-form-mskeyapp2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-ms-dnkey-trustee" class="col-sm-4 control-label">
+                                    Trustee Withdrawal Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-ms-dnkey-trustee" class="form-control cortex-form-mskeytrust2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-ms-path-withdraw" class="col-sm-4 control-label">
+                                    Withdrawal Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-ms-path-withdraw" class="form-control cortex-form-path2" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-user-id" class="col-sm-4 control-label">
+                                    API User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-email" class="col-sm-4 control-label">
+                                    API Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-rebalance-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-rebalance-password" class="col-sm-4 control-label">
+                                    API Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-hot-rebalance-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Rebalance Results</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- REBALANCE RESULTS -->
+                        <form class="form-horizontal cortex-rebalance-results-form">
+                        
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-btc-status" class="col-sm-4 control-label">
+                                    BTC Status
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-btc-status" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-btc-address" class="col-sm-4 control-label">
+                                    BTC From
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-btc-address" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-btc-addressed" class="col-sm-4 control-label">
+                                    BTC To
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-btc-addressed" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-btc-tx" class="col-sm-4 control-label">
+                                    BTC TX / TXID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-btc-tx" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-eth-status" class="col-sm-4 control-label">
+                                    ETH Status
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-eth-status" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-eth-address" class="col-sm-4 control-label">
+                                    ETH From
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-eth-address" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-eth-addressed" class="col-sm-4 control-label">
+                                    ETH To
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-eth-addressed" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-eth-tx" class="col-sm-4 control-label">
+                                    ETH TX / TXID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-eth-tx" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-xrp-status" class="col-sm-4 control-label">
+                                    XRP Status
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-xrp-status" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-xrp-address" class="col-sm-4 control-label">
+                                    XRP From
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-xrp-address" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-xrp-addressed" class="col-sm-4 control-label">
+                                    XRP To
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-xrp-addressed" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-rebalance-results-xrp-tx" class="col-sm-4 control-label">
+                                    XRP TX / TXID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-rebalance-results-xrp-tx" class="form-control" autocomplete="off" readonly="readonly" value="N/A" />
+                                </div>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
+</body>
+</html>

@@ -1922,6 +1922,71 @@ var cortex_sdk =
                             var custody_dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
                             var wallet_password = form.getElementsByClassName(cortex_sdk.classes.wpassword)[0].value;
                             
+                            var workload = {
+                                uid: uid,
+                                apiKey: api_key,
+                                email: bitcoin.crypto.sha256(email).toString('hex'),
+                                password: bitcoin.crypto.sha256(password).toString('hex'),
+                                secret: credentials.secret,
+                                seed: credentials.seed,
+                                ts: now,
+                                request: {
+                                    network: network_type,
+                                    dnkeys: {
+                                        app: custody_dnkey_app,
+                                        trustee: custody_dnkey_trustee
+                                    },
+                                    path: select_path
+                                }
+                            };
+
+                            cortex_sdk.actions.application.prepare(
+                                {uid: workload.uid, email: email, password: password, workload: workload},
+                                {url: 'custody'},
+                                function(decrypted_response)
+                                {
+                                    if(
+                                        decrypted_response 
+                                        && typeof decrypted_response.success != 'undefined'
+                                        && decrypted_response.success == true
+                                    ){
+                                        var response = decrypted_response.message;
+                                        if(
+                                            response
+                                            && typeof response.id != 'undefined'
+                                            && typeof response.path != 'undefined'
+                                            && typeof response.accounts == 'object'
+                                            && typeof response.network_type != 'undefined'
+                                            && typeof response.dnkeys == 'object'
+                                            && typeof response.dnkeys.app != 'undefined'
+                                            && typeof response.dnkeys.trustee != 'undefined'
+                                            && response.dnkeys.app
+                                            && response.dnkeys.trustee
+                                        ){
+                                            // FOR UX
+                                            response.aid = aid;
+                                            holding_response.success = true;
+                                            holding_response.message = response;
+                                            callback(holding_response);
+                                        }
+                                        else
+                                        {
+                                            holding_response.message = 'Invalid decrypted response for custody';
+                                            callback(holding_response);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        holding_response.message = 'Invalid response for custody generation';
+                                        callback(holding_response);
+                                    }
+                                }
+                            );
+                            
+                            /*
+                            
+                            TO BE REPLACED WITH NEW ENDPOINT
+                            
                             if(
                                 agent_dnkey
                                 && custody_dnkey_app && custody_dnkey_trustee 
@@ -2023,6 +2088,8 @@ var cortex_sdk =
                                 holding_response.message = 'All additional fields required for generating new shared hot wallet';
                                 callback(holding_response);
                             }
+                            
+                            */
                         }
                         else
                         {
@@ -2771,11 +2838,11 @@ var cortex_sdk =
                             rebalance_response.message = 'Invalid username and password for generating new shared hot wallet';
                             if(typeof cortex != 'undefined' && typeof cortex.ux != 'undefined')
                             {
-                                cortex.ux.modals('Warning', holding_response.message);
+                                cortex.ux.modals('Warning', rebalance_response.message);
                             }
                             else
                             {
-                                alert('Warning: ' + holding_response.message);
+                                alert('Warning: ' + rebalance_response.message);
                             }
                         }
                     }

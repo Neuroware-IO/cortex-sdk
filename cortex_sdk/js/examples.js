@@ -28,7 +28,6 @@ var cortex_sdk_callbacks =
     },
     custody: function(res)
     {
-        console.log('res', res);
         var alert_text = 'Unable to get custody address';
         if(
             res
@@ -36,7 +35,18 @@ var cortex_sdk_callbacks =
             && res.success === true
         )
         {
-            
+            var response = res.message;
+            alert_text = "BTC Address: " + response.accounts[0].address;
+            alert_text+= "\nBTC Balance: " + response.accounts[0].balances.str;
+            alert_text+= "\nBTC TXs: " + response.accounts[0].txs;
+            alert_text+= "\n";
+            alert_text+= "\nETH Address: " + response.accounts[1].address;
+            alert_text+= "\nETH Balance: " + response.accounts[1].balances.str;
+            alert_text+= "\nETH TXs: " + response.accounts[1].txs;
+            alert_text+= "\n";
+            alert_text+= "\nXRP Address: " + response.accounts[2].address;
+            alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
+            alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
         }
         alert(alert_text);
     },
@@ -56,7 +66,6 @@ var cortex_sdk_callbacks =
     },
     rebalance: function(res)
     {
-        console.log('res', res);
         var alert_text = 'Unable to get rebalance results';
         if(
             res
@@ -64,7 +73,60 @@ var cortex_sdk_callbacks =
             && res.success === true
         )
         {
-            
+            var response = res.message;
+            if(typeof response.accounts == 'object' && typeof response.rebalances == 'object')
+            {
+                alert_text = 'Rebalance Not Required';
+                if(response.rebalances.length > 0)
+                {
+                    alert_text = 'Rebalance Results Available';
+                    jQuery.each(response.rebalances, function(i)
+                    {
+                        var tx = response.rebalances[i];
+                        var decimals = 8;
+                        var text = 'Send to Holding: ';
+                        if(tx.symbol == 'eth') decimals = 18;
+                        else if(tx.symbol == 'xrp') decimals = 6;
+                        var value = parseFloat(tx.value / (10 ** decimals));
+                        if(tx.destination == 'withdraw')
+                        {
+                            text = 'Send to Withdrawal: '
+                        }
+                        text+= value;
+                        jQuery('#cortex-rebalance-results-' + tx.symbol + '-address').val(tx.from);
+                        jQuery('#cortex-rebalance-results-' + tx.symbol + '-addressed').val(tx.to);
+                        jQuery('#cortex-rebalance-results-' + tx.symbol + '-status').val(text);
+                    })
+                }
+            }
+            else if(typeof response == 'object' && response.length > 0)
+            {
+                alert_text = 'Rebalance Results Available';
+                jQuery.each(response, function(i)
+                {
+                    var tx = response[i];
+                    var text = 'Transaction Needs Signing: ';
+                    var decimals = 8;
+                    if(tx.account.symbol == 'eth') decimals = 18;
+                    else if(tx.account.symbol == 'xrp') decimals = 6;
+                    var value = parseFloat(tx.account.value / (10 ** decimals));
+                    var txid = tx.tx;
+                    if(tx.txid)
+                    {
+                        text = 'Transaction Sent: ';
+                        txid = tx.txid;
+                    }
+                    text+= value;
+                    jQuery('#cortex-rebalance-results-' + tx.account.symbol + '-address').val(tx.account.from);
+                    jQuery('#cortex-rebalance-results-' + tx.account.symbol + '-addressed').val(tx.account.to);
+                    jQuery('#cortex-rebalance-results-' + tx.account.symbol + '-status').val(text);
+                    jQuery('#cortex-rebalance-results-' + tx.account.symbol + '-tx').val(txid);
+                });
+            }
+            else
+            {
+                alert_text = 'Rebalance Not Required';
+            }
         }
         alert(alert_text);
     },
@@ -129,7 +191,6 @@ var cortex_sdk_callbacks =
     },
     withdraw: function(res = false, error = false)
     {
-        console.log('res', res);
         var alert_text = 'Unable to get withdrawal results';
         if(
             res
@@ -137,7 +198,11 @@ var cortex_sdk_callbacks =
             && res.success === true
         )
         {
-            
+            var response = res.message;
+            if(typeof response.txid != 'undefined')
+            {
+                alert('Success - TXID: ' + response.txid);
+            }
         }
         alert(alert_text);
     }

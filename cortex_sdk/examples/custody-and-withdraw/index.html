@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Custody &amp; Withdraw</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../js/aes.js'></script>
+    <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../js/examples.js'></script>
+    <script type='text/javascript' src='../../js/jquery.js'></script>
+</head>
+<body>    
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Generate Custody Addresses</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- CUSTODY FORM -->
+                        <form class="form-horizontal cortex-get-custody-address-form">
+                        
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="custody" />
+                            
+                            <input type="hidden" id="cortex-hot-custody-username" class="form-control cortex-form-appkey1" value="" />
+                            <input type="hidden" id="cortex-hot-custody-password" class="form-control cortex-form-wallet-password" value="" />
+                            <input type="hidden" id="cortex-hot-custody-account" class="form-control cortex-form-account-id" value="" />
+
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-hot-custody-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-path" class="col-sm-4 control-label">
+                                    New Hot Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-custody-path" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-ms-dnkey-app" class="col-sm-4 control-label">
+                                    App Custody DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-custody-ms-dnkey-app" class="form-control cortex-form-mskeyapp" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-ms-dnkey-trustee" class="col-sm-4 control-label">
+                                    Trustee Custody DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-custody-ms-dnkey-trustee" class="form-control cortex-form-mskeytrust" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-user-id" class="col-sm-4 control-label">
+                                    API User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-custody-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-email" class="col-sm-4 control-label">
+                                    API Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-custody-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-custody-password" class="col-sm-4 control-label">
+                                    API Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-hot-custody-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Withdraw</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- WITHDRAW FORM -->
+                        <form class="form-horizontal cortex-withdraw-custody-form">
+                        
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="withdraw" />
+
+                            <input type="hidden" id="withdraw_from" value="N/A" />
+                            <input type="hidden" id="withdraw_aid" value="N/A" />
+                            
+                            <div class="form-group">
+                                <label for="withdraw_agent_id" class="col-sm-4 control-label">
+                                    Custody UID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="withdraw_agent_id" class="form-control cortex-form-agent" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdraw_app_dnk" class="col-sm-4 control-label">
+                                    App DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="withdraw_app_dnk" class="form-control cortex-form-mskeyapp" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdraw_trust_dnk" class="col-sm-4 control-label">
+                                    Trustee DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="withdraw_trust_dnk" class="form-control cortex-form-mskeytrust" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdraw_path" class="col-sm-4 control-label">
+                                    Custody Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="withdraw_path" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="form-group">
+                                <label for="withdraw_currency" class="col-sm-4 control-label">
+                                    Currency
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="withdraw_currency" class="form-control cortex-form-currency">
+                                        <option value="Bitcoin">Bitcoin</option>
+                                        <option value="Ethereum">Ethereum</option>
+                                        <option value="Ripple">Ripple</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdraw_network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="withdraw_network" class="form-control cortex-form-network">
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-withdraw-amount" class="col-sm-4 control-label">
+                                    Amount
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-withdraw-amount" class="form-control cortex-form-amount" placeholder="Type the word 'all' in order to sweep the account ..." />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-withdraw-user-id" class="col-sm-4 control-label">
+                                    User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-withdraw-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cortex-withdraw-email" class="col-sm-4 control-label">
+                                    Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-withdraw-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-withdraw-password" class="col-sm-4 control-label">
+                                    Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-withdraw-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
+</body>
+</html>
