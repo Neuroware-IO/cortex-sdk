@@ -25,6 +25,13 @@ var cortex_sdk_callbacks =
             alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
             alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
         }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Deposit error: ' + res.message;
+            }
+        }
         alert(alert_text);
     },
     custody: function(res)
@@ -50,6 +57,13 @@ var cortex_sdk_callbacks =
             alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
             alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
         }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Custody error: ' + res.message;
+            }
+        }
         alert(alert_text);
     },
     holding: function(res)
@@ -63,6 +77,13 @@ var cortex_sdk_callbacks =
         )
         {
             
+        }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Holding error: ' + res.message;
+            }
         }
         alert(alert_text);
     },
@@ -131,6 +152,13 @@ var cortex_sdk_callbacks =
                 alert_text = 'Rebalance Not Required';
             }
         }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Rebalance error: ' + res.message;
+            }
+        }
         alert(alert_text);
     },
     register: function(uid = false)
@@ -140,6 +168,13 @@ var cortex_sdk_callbacks =
         if(uid)
         {
             alert_text = 'We have successfully registered User ID ' + uid + ' with both the application and the wallet API';
+        }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Register error: ' + res.message;
+            }
         }
         alert(alert_text);
     },
@@ -192,6 +227,13 @@ var cortex_sdk_callbacks =
                 });
             }
         }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Sweeping error: ' + res.message;
+            }
+        }
         alert(alert_text);
     },
     withdraw: function(res = false, error = false)
@@ -208,6 +250,13 @@ var cortex_sdk_callbacks =
             if(typeof response.txid != 'undefined')
             {
                 alert('Success - TXID: ' + response.txid);
+            }
+        }
+        else
+        {
+            if(typeof res.message != 'undefined' && res.message)
+            {
+                alert_text = 'Withdraw error: ' + res.message;
             }
         }
         alert(alert_text);
