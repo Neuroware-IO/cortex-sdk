@@ -6,7 +6,6 @@ CORTEX SDK
 
 var cortex_sdk_config = {
     apis: {
-        wallets: 'http://157.230.244.195/api/',
         wallet: 'https://sinegy.neuroware.io/v1/api/'
     },
     currencies: [
@@ -147,8 +146,73 @@ var cortex_db =
     }
 }
 
+var cortex_sdk_examples = 
+{
+    init: function()
+    {
+        jQuery('body').on('submit', '.cortex-dnkey-lookup-form', function(e)
+        {
+            e.preventDefault();
+            var form = this;
+            var host = jQuery(form).find('.cortex-dnkey-domain').val();
+            if(host && host.indexOf('.') > 0)
+            {
+                cortex_sdk.dnkeys.get(host, function(dnkeys)
+                {
+                    if(dnkeys && typeof dnkeys == 'object' && dnkeys.length > 0)
+                    {
+                        var html = '';
+                        jQuery.each(dnkeys, function(i)
+                        {
+                            if(i > 0) html+= '<hr>';
+                            html+= '<div class="form-group"><label for="cortex-dnkey-key" class="col-sm-4 control-label">Key</label><div class="col-sm-8"><input type="text" id="cortex-dnkey-key" class="form-control cortex-dnkey-key" readonly="readonly" value="'+dnkeys[i].k+'" /></div></div>';
+                            html+= '<div class="form-group"><label for="cortex-dnkey-value" class="col-sm-4 control-label">Value</label><div class="col-sm-8"><input type="text" id="cortex-dnkey-value" class="form-control cortex-dnkey-value" readonly="readonly" value="'+dnkeys[i].v+'" /></div></div>';
+                        });
+                        jQuery('.cortex-dnkey-lookup-form').find('alert').html(html);
+                    }
+                });
+            }
+        })
+    }
+};
+
+cortex_sdk_examples.init();
+
 var cortex_sdk = 
 {
+    dnkeys: {
+        get: function(host = false, callback = false)
+        {
+            if(host && typeof callback == 'function')
+            {
+                var settings = {
+                    "url": cortex_sdk_config.apis.wallet + "../dnkey",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({"host":host}),
+                };
+                jQuery.ajax(settings).done(function (response) 
+                {
+                    if(
+                        response 
+                        && typeof response.success != 'undefined'
+                        && typeof response.rdata == 'object'
+                        && response.success === true
+                    ){
+                        var dnkeys = [];
+                        jQuery.each(response.rdata, function(k, v)
+                        {
+                            dnkeys.push({k: k, v: v});
+                        });
+                        callback(dnkeys);
+                    }
+                });
+            }
+        }
+    },
     ux: {
         users: {
             add: function(this_user = false)
@@ -1922,174 +1986,104 @@ var cortex_sdk =
                             var custody_dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
                             var wallet_password = form.getElementsByClassName(cortex_sdk.classes.wpassword)[0].value;
                             
-                            var workload = {
-                                uid: uid,
-                                apiKey: api_key,
-                                email: bitcoin.crypto.sha256(email).toString('hex'),
-                                password: bitcoin.crypto.sha256(password).toString('hex'),
-                                secret: credentials.secret,
-                                seed: credentials.seed,
-                                ts: now,
-                                request: {
-                                    network: network_type,
-                                    dnkeys: {
-                                        app: custody_dnkey_app,
-                                        trustee: custody_dnkey_trustee
-                                    },
-                                    path: select_path
-                                }
-                            };
-
-                            cortex_sdk.actions.application.prepare(
-                                {uid: workload.uid, email: email, password: password, workload: workload},
-                                {url: 'custody'},
-                                function(decrypted_response)
-                                {
-                                    if(
-                                        decrypted_response 
-                                        && typeof decrypted_response.success != 'undefined'
-                                        && decrypted_response.success == true
-                                    ){
-                                        var response = decrypted_response.message;
-                                        if(
-                                            response
-                                            && typeof response.id != 'undefined'
-                                            && typeof response.path != 'undefined'
-                                            && typeof response.accounts == 'object'
-                                            && typeof response.network_type != 'undefined'
-                                            && typeof response.dnkeys == 'object'
-                                            && typeof response.dnkeys.app != 'undefined'
-                                            && typeof response.dnkeys.trustee != 'undefined'
-                                            && response.dnkeys.app
-                                            && response.dnkeys.trustee
-                                        ){
-                                            // FOR UX
-                                            response.aid = aid;
-                                            holding_response.success = true;
-                                            holding_response.message = response;
-                                            callback(holding_response);
-                                        }
-                                        else
-                                        {
-                                            holding_response.message = 'Invalid decrypted response for custody';
-                                            callback(holding_response);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        holding_response.message = 'Invalid response for custody generation';
-                                        callback(holding_response);
-                                    }
-                                }
-                            );
-                            
-                            /*
-                            
-                            TO BE REPLACED WITH NEW ENDPOINT
-                            
                             if(
                                 agent_dnkey
                                 && custody_dnkey_app && custody_dnkey_trustee 
                             ){
                             
                                 // First need to verify if username provided matches DN-Key records ...
-                                bce_web.api(
-                                    'dnkey?host=' + agent_dnkey + '&cache=off',
-                                    function(dnkeys)
+                                cortex_sdk.dnkeys.get(agent_dnkey, function(dnkeys)
+                                {
+                                    if(dnkeys && typeof dnkeys["btc-" + network_type] != 'undefined')
                                     {
-                                        if(dnkeys && typeof dnkeys["btc-" + network_type] != 'undefined')
+                                        var btc_address = dnkeys["btc-" + network_type];
+                                        var linked_account = cortex_accounts.get(aid, 'Bitcoin', network_type);
+                                        var seed = cortex_cookies.get(agent_dnkey, wallet_password, 'bp_cortex_seed');
+                                        var hash = nwbs.bitcoin.crypto.sha256(agent_dnkey + wallet_password).toString('hex');
+                                        var secret = nwbs.bitcoin.crypto.sha256(seed + hash + wp_user_salt).toString('hex');
+                                        var keys = cortex_crypto_utils.keys(secret, linked_account.path, network_type);
+                                        var chain = 'bitcoin';
+                                        if(
+                                            keys 
+                                            && typeof keys[chain] != 'undefined'
+                                            && typeof keys[chain].address != 'undefined'
+                                            && keys[chain].address == btc_address
+                                        )
                                         {
-                                            var btc_address = dnkeys["btc-" + network_type];
-                                            var linked_account = cortex_accounts.get(aid, 'Bitcoin', network_type);
-                                            var seed = cortex_cookies.get(agent_dnkey, wallet_password, 'bp_cortex_seed');
-                                            var hash = nwbs.bitcoin.crypto.sha256(agent_dnkey + wallet_password).toString('hex');
-                                            var secret = nwbs.bitcoin.crypto.sha256(seed + hash + wp_user_salt).toString('hex');
-                                            var keys = cortex_crypto_utils.keys(secret, linked_account.path, network_type);
-                                            var chain = 'bitcoin';
-                                            if(
-                                                keys 
-                                                && typeof keys[chain] != 'undefined'
-                                                && typeof keys[chain].address != 'undefined'
-                                                && keys[chain].address == btc_address
-                                            )
-                                            {
-                                                var workload = {
-                                                    uid: uid,
-                                                    apiKey: api_key,
-                                                    email: bitcoin.crypto.sha256(email).toString('hex'),
-                                                    password: bitcoin.crypto.sha256(password).toString('hex'),
-                                                    secret: credentials.secret,
-                                                    seed: credentials.seed,
-                                                    ts: now,
-                                                    request: {
-                                                        network: network_type,
-                                                        dnkeys: {
-                                                            app: custody_dnkey_app,
-                                                            trustee: custody_dnkey_trustee
-                                                        },
-                                                        path: select_path
-                                                    }
-                                                };
+                                            var workload = {
+                                                uid: uid,
+                                                apiKey: api_key,
+                                                email: bitcoin.crypto.sha256(email).toString('hex'),
+                                                password: bitcoin.crypto.sha256(password).toString('hex'),
+                                                secret: credentials.secret,
+                                                seed: credentials.seed,
+                                                ts: now,
+                                                request: {
+                                                    network: network_type,
+                                                    dnkeys: {
+                                                        app: custody_dnkey_app,
+                                                        trustee: custody_dnkey_trustee
+                                                    },
+                                                    path: select_path
+                                                }
+                                            };
 
-                                                cortex_sdk.actions.application.prepare(
-                                                    {uid: workload.uid, email: email, password: password, workload: workload},
-                                                    {url: 'custody'},
-                                                    function(decrypted_response)
-                                                    {
+                                            cortex_sdk.actions.application.prepare(
+                                                {uid: workload.uid, email: email, password: password, workload: workload},
+                                                {url: 'custody'},
+                                                function(decrypted_response)
+                                                {
+                                                    if(
+                                                        decrypted_response 
+                                                        && typeof decrypted_response.success != 'undefined'
+                                                        && decrypted_response.success == true
+                                                    ){
+                                                        var response = decrypted_response.message;
                                                         if(
-                                                            decrypted_response 
-                                                            && typeof decrypted_response.success != 'undefined'
-                                                            && decrypted_response.success == true
+                                                            response
+                                                            && typeof response.id != 'undefined'
+                                                            && typeof response.path != 'undefined'
+                                                            && typeof response.accounts == 'object'
+                                                            && typeof response.network_type != 'undefined'
+                                                            && typeof response.dnkeys == 'object'
+                                                            && typeof response.dnkeys.app != 'undefined'
+                                                            && typeof response.dnkeys.trustee != 'undefined'
+                                                            && response.dnkeys.app
+                                                            && response.dnkeys.trustee
                                                         ){
-                                                            var response = decrypted_response.message;
-                                                            if(
-                                                                response
-                                                                && typeof response.id != 'undefined'
-                                                                && typeof response.path != 'undefined'
-                                                                && typeof response.accounts == 'object'
-                                                                && typeof response.network_type != 'undefined'
-                                                                && typeof response.dnkeys == 'object'
-                                                                && typeof response.dnkeys.app != 'undefined'
-                                                                && typeof response.dnkeys.trustee != 'undefined'
-                                                                && response.dnkeys.app
-                                                                && response.dnkeys.trustee
-                                                            ){
-                                                                // FOR UX
-                                                                response.aid = aid;
-                                                                holding_response.success = true;
-                                                                holding_response.message = response;
-                                                                callback(holding_response);
-                                                            }
-                                                            else
-                                                            {
-                                                                holding_response.message = 'Invalid decrypted response for custody';
-                                                                callback(holding_response);
-                                                            }
+                                                            // FOR UX
+                                                            response.aid = aid;
+                                                            holding_response.success = true;
+                                                            holding_response.message = response;
+                                                            callback(holding_response);
                                                         }
                                                         else
                                                         {
-                                                            holding_response.message = 'Invalid response for custody generation';
+                                                            holding_response.message = 'Invalid decrypted response for custody';
                                                             callback(holding_response);
                                                         }
                                                     }
-                                                );
-                                            }
-                                        }
-                                        else
-                                        {
-                                            holding_response.message = 'Invalid agent DN-Key for generating new shared hot wallet';
-                                            callback(holding_response);
+                                                    else
+                                                    {
+                                                        holding_response.message = 'Invalid response for custody generation';
+                                                        callback(holding_response);
+                                                    }
+                                                }
+                                            );
                                         }
                                     }
-                                );
+                                    else
+                                    {
+                                        holding_response.message = 'Invalid agent DN-Key for generating new shared hot wallet';
+                                        callback(holding_response);
+                                    }
+                                });
                             }
                             else
                             {
                                 holding_response.message = 'All additional fields required for generating new shared hot wallet';
                                 callback(holding_response);
                             }
-                            
-                            */
                         }
                         else
                         {
@@ -2838,11 +2832,11 @@ var cortex_sdk =
                             rebalance_response.message = 'Invalid username and password for generating new shared hot wallet';
                             if(typeof cortex != 'undefined' && typeof cortex.ux != 'undefined')
                             {
-                                cortex.ux.modals('Warning', rebalance_response.message);
+                                cortex.ux.modals('Warning', holding_response.message);
                             }
                             else
                             {
-                                alert('Warning: ' + rebalance_response.message);
+                                alert('Warning: ' + holding_response.message);
                             }
                         }
                     }

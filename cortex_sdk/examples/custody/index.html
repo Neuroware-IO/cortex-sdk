@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Custody</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../js/aes.js'></script>
+    <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../js/examples.js'></script>
+    <script type='text/javascript' src='../../js/jquery.js'></script>
+</head>
+<body>    
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Generate Custody Address</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- CUSTRODY FORM -->
+                        <form class="form-horizontal cortex-get-holding-address-form">
+                        
+                            <input type="hidden" id="cortex-hot-new-account" class="cortex-form-account-id" />
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="holding" />
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-status" class="col-sm-4 control-label">
+                                    Action Type
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-hot-new-status" class="form-control cortex-return-addresses">
+                                        <option value="true">Return Addresses</option>
+                                        <option value="">Generate Addresses</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cortex-hot-new-message" class="col-sm-4 control-label">
+                                    Message to Sign
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-message" class="form-control cortex-form-message" readonly="readonly" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-wallet-username" class="col-sm-4 control-label">
+                                    Wallet Username
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-wallet-username" class="form-control cortex-form-appkey1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-wallet-password" class="col-sm-4 control-label">
+                                    Wallet Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-hot-wallet-password" class="form-control cortex-form-wallet-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-hot-new-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-path" class="col-sm-4 control-label">
+                                    New Hot Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-path" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-ms-dnkey-app" class="col-sm-4 control-label">
+                                    Multi-Sig App Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-ms-dnkey-app" class="form-control cortex-form-mskeyapp" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-ms-dnkey-trustee" class="col-sm-4 control-label">
+                                    Multi-Sig Trustee Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-ms-dnkey-trustee" class="form-control cortex-form-mskeytrust" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-app-dnkey" class="col-sm-4 control-label">
+                                    2nd App User DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-app-dnkey" class="form-control cortex-form-appkey2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-app-signature" class="col-sm-4 control-label">
+                                    2nd User Signature
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-app-signature" class="form-control cortex-form-appsign2" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-trustee-dnkey" class="col-sm-4 control-label">
+                                    Trustee User DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-trustee-dnkey" class="form-control cortex-form-trustkey1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-trustee-signature" class="col-sm-4 control-label">
+                                    Trustee User Signature
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-trustee-signature" class="form-control cortex-form-trustsign1" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-trustee-dnkey2" class="col-sm-4 control-label">
+                                    2nd Trustee User Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-trustee-dnkey2" class="form-control cortex-form-trustkey2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-trustee-signature2" class="col-sm-4 control-label">
+                                    2nd User Signature
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-trustee-signature2" class="form-control cortex-form-trustsign2" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-hot-new-user-id" class="col-sm-4 control-label">
+                                    API User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-email" class="col-sm-4 control-label">
+                                    API Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-new-email" class="form-control cortex-form-email-address" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-new-password" class="col-sm-4 control-label">
+                                    API Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-hot-new-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">DN-Key Lookup</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- DNKEY LOOKUP -->
+                        <form class="form-horizontal cortex-dnkey-lookup-form">
+                            <alert class="alert alert-block alert-info">
+                                <strong>LOOKUP ANY DOMAIN BELOW</strong>
+                            </alert>
+                            <hr>
+                            <div class="form-group">
+                                <label for="cortex-dnkey-domain" class="col-sm-4 control-label">
+                                    Domain
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-dnkey-domain" class="form-control cortex-dnkey-domain" />
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
+</body>
+</html>

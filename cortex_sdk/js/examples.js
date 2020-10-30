@@ -4,6 +4,7 @@ var cortex_sdk_callbacks =
 {
     deposit: function(res)
     {
+        console.log('callbacks.deposit.results', res);
         var alert_text = 'Unable to get deposit address';
         if(
             res
@@ -28,6 +29,7 @@ var cortex_sdk_callbacks =
     },
     custody: function(res)
     {
+        console.log('callbacks.custody.results', res);
         var alert_text = 'Unable to get custody address';
         if(
             res
@@ -52,7 +54,7 @@ var cortex_sdk_callbacks =
     },
     holding: function(res)
     {
-        console.log('res', res);
+        console.log('callbacks.holding.results', res);
         var alert_text = 'Unable to get holding address';
         if(
             res
@@ -66,6 +68,7 @@ var cortex_sdk_callbacks =
     },
     rebalance: function(res)
     {
+        console.log('callbacks.rebalance.results', res);
         var alert_text = 'Unable to get rebalance results';
         if(
             res
@@ -132,6 +135,7 @@ var cortex_sdk_callbacks =
     },
     register: function(uid = false)
     {
+        console.log('callbacks.register.results', uid);
         var alert_text = 'Unable to get returned register data';
         if(uid)
         {
@@ -141,6 +145,7 @@ var cortex_sdk_callbacks =
     },
     sweeping: function(res = false)
     {
+        console.log('callbacks.sweeping.results', res);
         var alert_text = 'Unable to get sweeping results';
         if(
             res
@@ -191,6 +196,7 @@ var cortex_sdk_callbacks =
     },
     withdraw: function(res = false, error = false)
     {
+        console.log('callbacks.withdraw.results', res);
         var alert_text = 'Unable to get withdrawal results';
         if(
             res
