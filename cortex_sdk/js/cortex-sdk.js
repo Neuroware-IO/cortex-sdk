@@ -181,7 +181,7 @@ cortex_sdk_examples.init();
 var cortex_sdk = 
 {
     dnkeys: {
-        get: function(host = false, callback = false)
+        get: function(host = false, callback = false, return_obj = false)
         {
             if(host && typeof callback == 'function')
             {
@@ -207,7 +207,21 @@ var cortex_sdk =
                         {
                             dnkeys.push({k: k, v: v});
                         });
-                        callback(dnkeys);
+                        if(return_obj)
+                        {
+                            dnkeys = {};
+                            jQuery.each(response.rdata, function(k, v)
+                            {
+                                var vals = k.split('-');
+                                var val = vals[1] + '-' + vals[2];
+                                dnkeys[val] = v;
+                            });
+                            callback(dnkeys);
+                        }
+                        else
+                        {
+                            callback(dnkeys);
+                        }
                     }
                 });
             }
@@ -1109,6 +1123,10 @@ var cortex_sdk =
                 {
                     cortex.ux.loader(true, action);
                 }
+                else
+                {
+                    document.body.classList.add("cortex-loading");
+                }
                 cortex_sdk.actions.application.encrypt(
                     {
                         uid: encrypt_options.uid, 
@@ -1149,6 +1167,7 @@ var cortex_sdk =
                                         var aesCtr = new aesjs.ModeOfOperation.ctr(keys.raw);
                                         var decryptedBytes = aesCtr.decrypt(encryptedBytes);
                                         var decrypted_data = aesjs.utils.utf8.fromBytes(decryptedBytes);
+                                        console.log('decrypted_data', decrypted_data);
                                         if(decrypted_data)
                                         {
                                             prepare_response.success = true;
@@ -1158,16 +1177,19 @@ var cortex_sdk =
                                         {
                                             prepare_response.message = 'Unable to decrypted response from prepared API call';
                                         }
+                                        document.body.classList.remove("cortex-loading");
                                         callback(prepare_response);
                                     }
                                     else
                                     {
+                                        document.body.classList.remove("cortex-loading");
                                         prepare_response.message = 'No encrypted response from prepared API call';
                                         callback(prepare_response);
                                     }
                                 }
                                 else
                                 {
+                                    document.body.classList.remove("cortex-loading");
                                     prepare_response.message = 'No response from prepared API call';
                                     callback(prepare_response);
                                 }
@@ -2130,6 +2152,15 @@ var cortex_sdk =
                         var return_addresses = true;
                     }
                     
+                    var included_agent_signature = false;
+                    if(
+                        typeof form.getElementsByClassName('cortex-agent-sig')[0] != 'undefined'
+                        && form.getElementsByClassName('cortex-agent-sig')[0].value
+                    )
+                    {
+                        included_agent_signature = form.getElementsByClassName('cortex-agent-sig')[0].value;
+                    }
+                    
                     // The network and path would be be filled-in by application ...
                     var network_type = form.getElementsByClassName(cortex_sdk.classes.network)[0].value;
                     var callback_function = form.getElementsByClassName(cortex_sdk.classes.callback)[0].value;
@@ -2185,120 +2216,126 @@ var cortex_sdk =
                             ){
                             
                                 // First need to verify if username provided matches DN-Key records ...
-                                bce_web.api(
-                                    'dnkey?host=' + agent_dnkey + '&cache=off',
-                                    function(dnkeys)
+                                cortex_sdk.dnkeys.get(agent_dnkey, function(dnkeys)
                                     {
                                         if(dnkeys && typeof dnkeys["btc-" + network_type] != 'undefined')
                                         {
                                             var btc_address = dnkeys["btc-" + network_type];
-                                            var linked_account = cortex_accounts.get(aid, 'Bitcoin', network_type);
-                                            var seed = cortex_cookies.get(agent_dnkey, wallet_password, 'bp_cortex_seed');
-                                            var hash = nwbs.bitcoin.crypto.sha256(agent_dnkey + wallet_password).toString('hex');
-                                            var secret = nwbs.bitcoin.crypto.sha256(seed + hash + wp_user_salt).toString('hex');
-                                            var keys = cortex_crypto_utils.keys(secret, linked_account.path, network_type);
-                                            var chain = 'bitcoin';
-                                            if(
-                                                keys 
-                                                && typeof keys[chain] != 'undefined'
-                                                && typeof keys[chain].address != 'undefined'
-                                                && keys[chain].address == btc_address
-                                            )
+                                            var agent_signature = false;
+                                            if(typeof cortex != 'undefined')
                                             {
-                                                var network = 'bitcoin';
-                                                if(network_type == 'private') network = 'bitcointestnet';
-                                                var blockchain = bitcoin.networks[network];
-                                                var message_key = bitcoin.ECKey.fromWIF(keys[chain].privateKey);
-                                                var agent_signature = bitcoin.Message.sign(message_key, message_to_sign, blockchain).toString('base64');
-                                                
-                                                var workload = {
-                                                    uid: uid,
-                                                    apiKey: api_key,
-                                                    email: bitcoin.crypto.sha256(email).toString('hex'),
-                                                    password: bitcoin.crypto.sha256(password).toString('hex'),
-                                                    secret: credentials.secret,
-                                                    seed: credentials.seed,
-                                                    ts: now,
-                                                    request: {
-                                                        return_addresses_only: return_addresses,
-                                                        network: network_type,
-                                                        agent: {
-                                                            dnkey: agent_dnkey,
-                                                            signature: agent_signature
-                                                        },
-                                                        ms: {
-                                                            dnkeys: [ms_dnkey_app, ms_dnkey_trustee]
-                                                        },
-                                                        application: {
-                                                            dnkey: app_dnkey,
-                                                            signature: app_signature
-                                                        },
-                                                        trustee: {
-                                                            dnkeys: [primary_trustee_dnkey, secondary_trustee_dnkey],
-                                                            signatures: [primary_trustee_signature, secondary_trustee_signature]
-                                                        },
-                                                        wallet: {
-                                                            path: select_path
-                                                        }
+                                                var linked_account = cortex_accounts.get(aid, 'Bitcoin', network_type);
+                                                var seed = cortex_cookies.get(agent_dnkey, wallet_password, 'bp_cortex_seed');
+                                                var hash = nwbs.bitcoin.crypto.sha256(agent_dnkey + wallet_password).toString('hex');
+                                                var secret = nwbs.bitcoin.crypto.sha256(seed + hash + wp_user_salt).toString('hex');
+                                                var keys = cortex_crypto_utils.keys(secret, linked_account.path, network_type);
+                                                var chain = 'bitcoin';
+                                                if(
+                                                    keys 
+                                                    && typeof keys[chain] != 'undefined'
+                                                    && typeof keys[chain].address != 'undefined'
+                                                    && keys[chain].address == btc_address
+                                                )
+                                                {
+                                                    var network = 'bitcoin';
+                                                    if(network_type == 'private') network = 'bitcointestnet';
+                                                    var blockchain = bitcoin.networks[network];
+                                                    var message_key = bitcoin.ECKey.fromWIF(keys[chain].privateKey);
+                                                    agent_signature = bitcoin.Message.sign(message_key, message_to_sign, blockchain).toString('base64');
+                                                }
+                                            }
+                                            else if(included_agent_signature)
+                                            {
+                                                agent_signature = included_agent_signature;
+                                            }
+                                              
+                                            var workload = {
+                                                uid: uid,
+                                                apiKey: api_key,
+                                                email: bitcoin.crypto.sha256(email).toString('hex'),
+                                                password: bitcoin.crypto.sha256(password).toString('hex'),
+                                                secret: credentials.secret,
+                                                seed: credentials.seed,
+                                                ts: now,
+                                                request: {
+                                                    return_addresses_only: return_addresses,
+                                                    network: network_type,
+                                                    agent: {
+                                                        dnkey: agent_dnkey,
+                                                        signature: agent_signature
+                                                    },
+                                                    ms: {
+                                                        dnkeys: [ms_dnkey_app, ms_dnkey_trustee]
+                                                    },
+                                                    application: {
+                                                        dnkey: app_dnkey,
+                                                        signature: app_signature
+                                                    },
+                                                    trustee: {
+                                                        dnkeys: [primary_trustee_dnkey, secondary_trustee_dnkey],
+                                                        signatures: [primary_trustee_signature, secondary_trustee_signature]
+                                                    },
+                                                    wallet: {
+                                                        path: select_path
                                                     }
-                                                };
+                                                }
+                                            };
 
-                                                cortex_sdk.actions.application.prepare(
-                                                    {uid: workload.uid, email: email, password: password, workload: workload},
-                                                    {url: 'holding'},
-                                                    function(decrypted_response)
-                                                    {
+                                            cortex_sdk.actions.application.prepare(
+                                                {uid: workload.uid, email: email, password: password, workload: workload},
+                                                {url: 'holding'},
+                                                function(decrypted_response)
+                                                {
+                                                    if(
+                                                        decrypted_response 
+                                                        && typeof decrypted_response.success != 'undefined'
+                                                        && decrypted_response.success == true
+                                                    ){
+                                                        var response = decrypted_response.message;
                                                         if(
-                                                            decrypted_response 
-                                                            && typeof decrypted_response.success != 'undefined'
-                                                            && decrypted_response.success == true
+                                                            response
+                                                            && typeof response.id != 'undefined'
+                                                            && typeof response.path != 'undefined'
+                                                            && typeof response.accounts == 'object'
+                                                            && typeof response.network_type != 'undefined'
                                                         ){
-                                                            var response = decrypted_response.message;
-                                                            if(
-                                                                response
-                                                                && typeof response.id != 'undefined'
-                                                                && typeof response.path != 'undefined'
-                                                                && typeof response.accounts == 'object'
-                                                                && typeof response.network_type != 'undefined'
-                                                            ){
-                                                                // FOR UX
-                                                                response.aid = aid;
-                                                                holding_response.success = true;
-                                                                holding_response.message = response;
-                                                                callback(holding_response);
-                                                            }
-                                                            else if(
-                                                                response
-                                                                && typeof response.btc != 'undefined'
-                                                                && typeof response.eth != 'undefined'
-                                                                && typeof response.xrp != 'undefined'
-                                                            )
-                                                            {
-                                                                holding_response.success = true;
-                                                                holding_response.message = response;
-                                                                callback(holding_response);
-                                                            }
-                                                            else
-                                                            {
-                                                                holding_response.message = 'Invalid decrypted response for holding';
-                                                                callback(holding_response);
-                                                            }
+                                                            // FOR UX
+                                                            response.aid = aid;
+                                                            holding_response.success = true;
+                                                            holding_response.message = response;
+                                                            callback(holding_response);
+                                                        }
+                                                        else if(
+                                                            response
+                                                            && typeof response.btc != 'undefined'
+                                                            && typeof response.eth != 'undefined'
+                                                            && typeof response.xrp != 'undefined'
+                                                        )
+                                                        {
+                                                            holding_response.success = true;
+                                                            holding_response.message = response;
+                                                            callback(holding_response);
                                                         }
                                                         else
                                                         {
-                                                            holding_response.message = 'Invalid response for holding';
+                                                            holding_response.message = 'Invalid decrypted response for holding';
                                                             callback(holding_response);
                                                         }
                                                     }
-                                                );
-                                            }
+                                                    else
+                                                    {
+                                                        holding_response.message = 'Invalid response for holding';
+                                                        callback(holding_response);
+                                                    }
+                                                }
+                                            );
                                         }
                                         else
                                         {
                                             holding_response.message = 'Invalid agent DN-Key for generating new shared hot wallet';
                                             callback(holding_response);
                                         }
-                                    }
+                                    }, true
                                 );
                             }
                             else

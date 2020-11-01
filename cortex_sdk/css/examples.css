@@ -30,3 +30,26 @@ RESETS
     padding: 0;
     margin: -12px 0 0 0;
 }
+body.cortex-loading:before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #EEE;
+    z-index: 99999;
+}
+body.cortex-loading:after {
+    content: "PROCESSING - PLEASE WAIT";
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    margin-top: -15px;
+    text-align: center;
+    z-index: 9999999;
+}

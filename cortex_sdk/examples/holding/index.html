@@ -11,7 +11,6 @@
     <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
     <script type='text/javascript' src='../../js/aes.js'></script>
     <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
-    <script type='text/javascript' src='../../js/examples.js'></script>
     <script type='text/javascript' src='../../js/jquery.js'></script>
 </head>
 <body>
@@ -65,18 +64,26 @@
 
                             <div class="form-group">
                                 <label for="cortex-hot-wallet-username" class="col-sm-4 control-label">
-                                    Wallet Username
+                                    Agent Username
                                 </label>
                                 <div class="col-sm-8">
                                     <input type="text" id="cortex-hot-wallet-username" class="form-control cortex-form-appkey1" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="cortex-hot-wallet-password" class="col-sm-4 control-label">
-                                    Wallet Password
+                                <label for="cortex-hot-agent-pw" class="col-sm-4 control-label">
+                                    Agent Password
                                 </label>
                                 <div class="col-sm-8">
-                                    <input type="password" id="cortex-hot-wallet-password" class="form-control cortex-form-wallet-password" />
+                                    <input type="password" id="cortex-hot-agent-pw" class="form-control cortex-form-wallet-password" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-hot-agent-sig" class="col-sm-4 control-label">
+                                    Agent Signature
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-agent-sig" class="form-control cortex-agent-sig" />
                                 </div>
                             </div>
 
@@ -195,7 +202,7 @@
                                     API Email
                                 </label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="cortex-hot-new-email" class="form-control cortex-form-email-address" />
+                                    <input type="text" id="cortex-hot-new-email" class="form-control cortex-form-email-address" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -256,6 +263,7 @@
         </div>
     </div>
     <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/examples.js'></script>
     <script type='text/javascript' src='../../js/bitcoin.js'></script>
     <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
 </body>

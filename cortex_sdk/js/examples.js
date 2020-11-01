@@ -76,7 +76,39 @@ var cortex_sdk_callbacks =
             && res.success === true
         )
         {
-            
+            var response = res.message;
+            if(
+                typeof response.btc != 'undefined'
+                && typeof response.eth != 'undefined'
+                && typeof response.xrp != 'undefined'
+            )
+            {
+                alert_text = "BTC Address: " + response.btc.address;
+                alert_text+= "\n";
+                alert_text+= "\nBTC xPub: " + response.btc.xpub;
+                alert_text+= "\n";
+                alert_text+= "\nETH Address: " + response.eth.address;
+                alert_text+= "\n";
+                alert_text+= "\nXRP Address: " + response.xrp.address;
+            }
+            else if(
+                typeof response.id !== 'undefined'
+                && typeof response.accounts == 'object'
+                && response.accounts.length > 0
+            )
+            {
+                alert_text = "BTC Address: " + response.accounts[0].address;
+                alert_text+= "\nBTC Balance: " + response.accounts[0].balances.str;
+                alert_text+= "\nBTC TXs: " + response.accounts[0].txs;
+                alert_text+= "\n";
+                alert_text+= "\nETH Address: " + response.accounts[1].address;
+                alert_text+= "\nETH Balance: " + response.accounts[1].balances.str;
+                alert_text+= "\nETH TXs: " + response.accounts[1].txs;
+                alert_text+= "\n";
+                alert_text+= "\nXRP Address: " + response.accounts[2].address;
+                alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
+                alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
+            }
         }
         else
         {
@@ -262,3 +294,42 @@ var cortex_sdk_callbacks =
         alert(alert_text);
     }
 };
+
+var cortex_sdk_ux = 
+{
+    init: function()
+    {
+        var date = new Date().toString().split(' ');
+        var message_to_sign = 'New Shared Hot Wallet on ' + date[0] + ' ' + date[1] + ' ' + date[2] + ' ' + date[3];
+        var input = document.getElementById('cortex-hot-new-message');
+        if(input) input.value = message_to_sign;
+    }
+}
+
+/*
+
+LOAD UX
+
+*/
+
+if(window.attachEvent) 
+{
+    window.attachEvent('onload', cortex_sdk_ux.init());
+} 
+else 
+{
+    if(window.onload)
+    {
+        var curronload = window.onload;
+        var newonload = function(evt) 
+        {
+            curronload(evt);
+            cortex_sdk_ux.init(evt);
+        };
+        window.onload = newonload;
+    } 
+    else 
+    {
+        window.onload = cortex_sdk_ux.init();
+    }
+}
