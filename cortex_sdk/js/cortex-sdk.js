@@ -1167,7 +1167,6 @@ var cortex_sdk =
                                         var aesCtr = new aesjs.ModeOfOperation.ctr(keys.raw);
                                         var decryptedBytes = aesCtr.decrypt(encryptedBytes);
                                         var decrypted_data = aesjs.utils.utf8.fromBytes(decryptedBytes);
-                                        console.log('decrypted_data', decrypted_data);
                                         if(decrypted_data)
                                         {
                                             prepare_response.success = true;
