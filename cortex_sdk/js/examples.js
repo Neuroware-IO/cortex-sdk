@@ -10,6 +10,9 @@ var cortex_sdk_callbacks =
             res
             && typeof res.success != 'undefined'
             && res.success === true
+            && typeof res.message != 'undefined'
+            && typeof res.message.accounts == 'object'
+            && res.message.accounts.length == 4
         )
         {
             var response = res.message;
@@ -24,6 +27,10 @@ var cortex_sdk_callbacks =
             alert_text+= "\nXRP Address: " + response.accounts[2].address;
             alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
             alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
+            alert_text+= "\n";
+            alert_text+= "\nLTC Address: " + response.accounts[3].address;
+            alert_text+= "\nLTC Balance: " + response.accounts[3].balances.str;
+            alert_text+= "\nLTC TXs: " + response.accounts[3].txs;
         }
         else
         {
@@ -56,6 +63,10 @@ var cortex_sdk_callbacks =
             alert_text+= "\nXRP Address: " + response.accounts[2].address;
             alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
             alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
+            alert_text+= "\n";
+            alert_text+= "\nLTC Address: " + response.accounts[3].address;
+            alert_text+= "\nLTC Balance: " + response.accounts[3].balances.str;
+            alert_text+= "\nLTC TXs: " + response.accounts[3].txs;
         }
         else
         {
@@ -81,6 +92,7 @@ var cortex_sdk_callbacks =
                 typeof response.btc != 'undefined'
                 && typeof response.eth != 'undefined'
                 && typeof response.xrp != 'undefined'
+                && typeof response.ltc != 'undefined'
             )
             {
                 alert_text = "BTC Address: " + response.btc.address;
@@ -90,11 +102,16 @@ var cortex_sdk_callbacks =
                 alert_text+= "\nETH Address: " + response.eth.address;
                 alert_text+= "\n";
                 alert_text+= "\nXRP Address: " + response.xrp.address;
+                alert_text+= "\n";
+                alert_text+= "\nLTC Address: " + response.ltc.address;
+                alert_text+= "\n";
+                alert_text+= "\nLTC xPub: " + response.ltc.xpub;
+                alert_text+= "\n";
             }
             else if(
                 typeof response.id !== 'undefined'
                 && typeof response.accounts == 'object'
-                && response.accounts.length > 0
+                && response.accounts.length == 4
             )
             {
                 alert_text = "BTC Address: " + response.accounts[0].address;
@@ -108,6 +125,10 @@ var cortex_sdk_callbacks =
                 alert_text+= "\nXRP Address: " + response.accounts[2].address;
                 alert_text+= "\nXRP Balance: " + response.accounts[2].balances.str;
                 alert_text+= "\nXRP TXs: " + response.accounts[2].txs;
+                alert_text+= "\n";
+                alert_text+= "\nLTC Address: " + response.accounts[3].address;
+                alert_text+= "\nLTC Balance: " + response.accounts[3].balances.str;
+                alert_text+= "\nLTC TXs: " + response.accounts[3].txs;
             }
         }
         else
@@ -255,6 +276,16 @@ var cortex_sdk_callbacks =
                     else
                     {
                         alert_text+= "\nXRP TXID: " + response[i].xrp.message;
+                    }
+                    alert_text+= "\n";
+                    alert_text+= "\nLTC Address: " + response[i].ltc.address;
+                    if(response[i].ltc.txid)
+                    {
+                        alert_text+= "\nLTC TXID: " + response[i].ltc.txid;
+                    }
+                    else
+                    {
+                        alert_text+= "\nLTC TXID: " + response[i].ltc.message;
                     }
                 });
             }
