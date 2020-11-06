@@ -2743,6 +2743,7 @@ var cortex_sdk =
                             var ms_dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
                             var ms_dnkey_app2 = form.getElementsByClassName(cortex_sdk.classes.mskeyapp2)[0].value;
                             var ms_dnkey_trustee2 = form.getElementsByClassName(cortex_sdk.classes.mskeytrust2)[0].value;
+                            var hidden_agent_id = form.getElementsByClassName(cortex_sdk.classes.agent)[0].value;
                             
                             var workload = {
                                 uid: uid,
@@ -2754,6 +2755,7 @@ var cortex_sdk =
                                 ts: now,
                                 request: {
                                     check_balances_only: wallet_check,
+                                    aid: hidden_agent_id,
                                     network: network_type,
                                     agent: {
                                         dnkey: agent_dnkey

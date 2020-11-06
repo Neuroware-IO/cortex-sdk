@@ -193,6 +193,12 @@ var cortex_sdk_callbacks =
                         text = 'Transaction Sent: ';
                         txid = tx.txid;
                     }
+                    else if(!tx.tx)
+                    {
+                        text = 'Error: ';
+                        value = tx.message;
+                        txid = 'N/A';
+                    }
                     text+= value;
                     jQuery('#cortex-rebalance-results-' + tx.account.symbol + '-address').val(tx.account.from);
                     jQuery('#cortex-rebalance-results-' + tx.account.symbol + '-addressed').val(tx.account.to);
