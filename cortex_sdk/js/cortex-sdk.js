@@ -3,7 +3,7 @@
 CORTEX SDK
 
 */
-
+var cortex_sdk_initiated = false;
 var cortex_sdk_config = {
     apis: {
         wallet: 'https://sinegy.neuroware.io/v1/api/'
@@ -33,7 +33,7 @@ var cortex_sdk_config = {
                 }
             },
             nodes: {
-                private: 'https://eth.neuroware.io',
+                private: 'https://eth.credence.app',
                 public: 'http://ethereum.neuroware.io'
             },
             contracts: {
@@ -1127,7 +1127,6 @@ var cortex_sdk =
                 {
                     document.body.classList.add("cortex-loading");
                 }
-                console.log('workload to encrypt', encrypt_options.workload);
                 cortex_sdk.actions.application.encrypt(
                     {
                         uid: encrypt_options.uid, 
@@ -1250,9 +1249,13 @@ var cortex_sdk =
                 )
                 {
                     var user = cortex_db.client.users[parseInt(options.uid)];
-                    if(user && typeof user.email != 'undefined' && typeof user.password != 'undefined')
+                    if(
+                        user && typeof user.email != 'undefined' 
+                        && typeof user.passwords != 'undefined' 
+                        && typeof user.passwords[0] != 'undefined'
+                    )
                     {
-                        if(options.email == user.email && options.password == user.password)
+                        if(options.email == user.email && options.password == user.passwords[0])
                         {
                             if(typeof callback == 'function' && typeof cortex_db.client.users[options.id] != 'undefined')
                             {
@@ -1260,8 +1263,8 @@ var cortex_sdk =
                                 var this_user = cortex_db.client.users[parseInt(options.id)];
                                 callback({
                                     secret: this_user.secret,
-                                    key: this_user.key,
-                                    password: this_user.password
+                                    key: this_user.keys[0],
+                                    password: this_user.passwords[0]
                                 });
                             }
                             else
@@ -1307,20 +1310,26 @@ var cortex_sdk =
                 )
                 {
                     var user = cortex_db.client.users[options.uid];
-                    if(user && typeof user.email != 'undefined' && typeof user.password != 'undefined')
+                    if(
+                        user && typeof user.email != 'undefined' 
+                        && typeof user.passwords != 'undefined' 
+                        && typeof user.passwords[0] != 'undefined'
+                        && typeof user.keys != 'undefined' 
+                        && typeof user.keys[0] != 'undefined'
+                    )
                     {
-                        if(options.email == user.email && options.password == user.password)
+                        if(options.email == user.email && options.password == user.passwords[0])
                         {
                             if(typeof callback == 'function')
                             {
                                 callback({
                                     secret: user.secret,
-                                    key: user.key
+                                    key: user.keys[0]
                                 });
                             }
                             else
                             {
-                                return user.password;
+                                return user.passwords[0];
                             }
                         }
                     }
@@ -1411,17 +1420,17 @@ var cortex_sdk =
                 ){
                     if(
                         typeof cortex_db.wallet.users[parseInt(options.uid)] != 'undefined'
-                        && typeof cortex_db.wallet.users[parseInt(options.uid)].key != 'undefined'
+                        && typeof cortex_db.wallet.users[parseInt(options.uid)].keys != 'undefined'
+                        && typeof cortex_db.wallet.users[parseInt(options.uid)].keys[0] != 'undefined'
                     ){
                         // First need to decrypt the workload based on provided UID and stored public key ...
-                        var public_key = cortex_db.wallet.users[parseInt(options.uid)].key;
+                        var public_key = cortex_db.wallet.users[parseInt(options.uid)].keys[0];
                         var key_hash = EthJS.Util.sha256(public_key).toString('hex');
                         var keys = cortex_sdk.keys(key_hash);
                         var encryptedBytes = aesjs.utils.hex.toBytes(options.workload);
                         var aesCtr = new aesjs.ModeOfOperation.ctr(keys.raw);
                         var decryptedBytes = aesCtr.decrypt(encryptedBytes);
                         var decrypted_data = aesjs.utils.utf8.fromBytes(decryptedBytes);
-                        
                         if(decrypted_data)
                         {
                             var workload = JSON.parse(decrypted_data);
@@ -1579,26 +1588,16 @@ var cortex_sdk =
                             )
                             {
                                 var workload = response.workload;
-                                
-                                // This workload is for generating 3 out of 5 multi-sig account ...
-                                // Four humans (two trustees and two application owners)
-                                // Can be split into additional humans using shamir ...
-                                
-                                var total_number_of_keys = 5;
-                                var required_keys = 3;
-                                
                                 if(
                                     typeof workload == 'object'
                                     && typeof workload.network != 'undefined'
-                                    
                                     // Need to know which application admin initated the request ...
-                                    
-                                    && typeof workload.agent != 'undefined'
+                                    && typeof workload.aid != 'undefined'
+                                    && typeof workload.chain != 'undefined'
                                     && typeof workload.dnkeys == 'object'
                                     && workload.dnkeys.length == 4
                                     
                                 ){  
-                                    
                                     // TODO - Switch to Azri seed function !!!
                                     var collective_dnkeys = '';
                                     jQuery.each(workload.dnkeys, function(u)
@@ -1606,139 +1605,403 @@ var cortex_sdk =
                                         if(u > 0) collective_dnkeys+= '_';
                                         collective_dnkeys+= workload.dnkeys[u];
                                     });
-                                    var seed = bitcoin.crypto.sha256(wallet_salt + collective_dnkeys).toString('hex');
-
-                                    cortex_hot_wallets.hd.create(
-                                    {
-                                        seed: seed, 
-                                        path: workload.path, 
-                                        network: workload.network, 
-                                        privacy: 'public',
-                                        lookup: true
-                                    }, 
-                                    function(data)
-                                    {
-                                        if(data && typeof data.rdata != 'undefined')
-                                        {   
-                                            var keys = data.rdata;
-
-                                            // Need to store / transmit the reedem scripts ...?
-                                            // Should they also be DN-KEY based ...?
-                                            // Can even DN-Key shamir settings ...?
-                                            // (allowing for any number of human entities)
-                                            
-                                            console.log('recovery keys', keys);
-                                            
-                                            /*
-
-                                            users.push({
-                                                btc: {
-                                                    address: keys.bitcoin.address,
-                                                    xpub: keys.bitcoin.xPub
-                                                },
-                                                eth: {
-                                                    address: keys.ethereum.address
-                                                },
-                                                xrp: {
-                                                    address: keys.ripple.address
-                                                }
-                                            });
-
-                                            var network = 'bitcoin';
-                                            if(workload.network == 'private') network = 'bitcointestnet';
-                                            var blockchain = nwbs.bitcoin.networks[network];
-
-                                            var key_pairs = [];
-                                            jQuery.each(users, function(kp)
+                                    cortex_sdk.actions.client.bypass(
+                                        {uid: options.uid, email: response.email, password: response.password, id: workload.aid},
+                                        app_salt,
+                                        function(bypass_results)
+                                        {
+                                            var pubKey = cortex_db.wallet.users[workload.aid].keys[0];
+                                            var apiKey = bitcoin.crypto.sha256(pubKey + bypass_results.password).toString('hex')
+                                            var usedSeed = bypass_results.secret + wallet_salt + apiKey + bypass_results.key;
+                                            var userSeed = bitcoin.crypto.sha256(usedSeed).toString('hex');
+                                            var walletSeed = wallet_salt + userSeed + collective_dnkeys;
+                                            var seed = bitcoin.crypto.sha256(walletSeed).toString('hex');
+                                            cortex_hot_wallets.hd.create(
                                             {
-                                                var this_key = users[kp].btc.xpub;
-                                                var this_wallet = nwbs.bitcoin.HDNode.fromBase58(this_key, blockchain);
-                                                key_pairs.push(this_wallet.getPublicKeyBuffer());
-                                            });
-                                            key_pairs.sort();
-                                            var redeem_script = nwbs.bitcoin.script.multisig.output.encode(required_keys, key_pairs);
-                                            var script_to_redeem = nwbs.bitcoin.crypto.hash160(redeem_script);
-                                            var script_key = nwbs.bitcoin.script.scriptHash.output.encode(script_to_redeem);
-                                            var address = nwbs.bitcoin.address.fromOutputScript(script_key, blockchain);
-                                            var multi_sig_keys = {
-                                                address: address,
-                                                redeem: redeem_script.toString('hex')
-                                            };
-
-                                            var wallet_id = bitcoin.crypto.sha256(collective_dnkeys + JSON.stringify(workload.wallet.path) + workload.network).toString('hex');
-
-                                            var pathed = '';
-                                            jQuery.each(workload.wallet.path, function(p)
+                                                seed: seed, 
+                                                path: workload.path, 
+                                                network: workload.network, 
+                                                privacy: 'private',
+                                                lookup: true
+                                            }, 
+                                            function(data)
                                             {
-                                                if(p < 1) pathed+= workload.wallet.path[p];
-                                                else pathed+= ', ' + workload.wallet.path[p];
-                                            });
+                                                if(data && typeof data.rdata != 'undefined')
+                                                {   
+                                                    var keys = data.rdata;
+                                                    if(workload.chain == 'btc' || workload.chain == 'ltc')
+                                                    {
+                                                        if(
+                                                            typeof workload.script != 'undefined' 
+                                                            && typeof workload.tx != 'undefined'
+                                                        ){
+                                                            
+                                                            var chain = 'bitcoin';
+                                                            if(workload.network == 'private' || workload.network == 'bitcointestnet')
+                                                            {
+                                                                chain = 'bitcointestnet';
+                                                            }
+                                                            if(workload.chain == 'ltc')
+                                                            {
+                                                                chain = 'litecoin';
+                                                                if(workload.network == 'private' || workload.network == 'litecointestnet')
+                                                                {
+                                                                    chain = 'litecointestnet';
+                                                                }
+                                                            }
+                                                            var blockchain = nwbs.bitcoin.networks[chain];
+                                                            var this_script = nwbs.bitcoin.script.fromASM(workload.script);
+                                                            var chunks = this_script.slice(2);
+                                                            var redeemed_script = nwbs.bitcoin.script.multisig.output.decode(chunks, blockchain);
+                                                            var redeem_script = nwbs.bitcoin.script.multisig.output.encode(redeemed_script.m, redeemed_script.pubKeys);
+                                                            var script_to_redeem = nwbs.bitcoin.crypto.hash160(redeem_script);
+                                                            var script_key = nwbs.bitcoin.script.scriptHash.output.encode(script_to_redeem);
+                                                            var ms_address = nwbs.bitcoin.address.fromOutputScript(script_key, blockchain);
+                                                            var addresses = [];
+                                                            var total = redeemed_script.pubKeys.length;
+                                                            var needed = redeemed_script.m;
+                                                            var got_relevant_key = false;
+                                                            for(i = 0; i < total; i++)
+                                                            {
+                                                                //var this_key = redeemed_script.pubKeys[i];
+                                                                var this_key = nwbs.bitcoin.ECPair.fromPublicKeyBuffer(redeemed_script.pubKeys[i], blockchain);
+                                                                var this_address = this_key.getAddress(blockchain).toString();
+                                                                addresses.push({address: this_address});
+                                                                var chain_to_check = 'bitcoin';
+                                                                if(workload.chain == 'ltc') chain_to_check = 'litecoin';
+                                                                if(this_address == keys[chain_to_check].address)
+                                                                {
+                                                                    got_relevant_key = true;
+                                                                }
+                                                            }
+                                                            // Need to check if keys match one of MS accounts ...
+                                                            if(got_relevant_key)
+                                                            {
+                                                                // Also need to check if TX only missing one signature
+                                                                // If so - then sign and relay transaction ...
+                                                                var linked_key = keys.bitcoin.privateKey;
+                                                                var tx = nwbs.bitcoin.Transaction.fromHex(workload.tx);
+                                                                var new_tx = new nwbs.bitcoin.TransactionBuilder.fromTransaction(tx, blockchain);
+                                                                var pkey = nwbs.bitcoin.ECPair.fromWIF(linked_key, blockchain);
+                                                                var this_script = nwbs.bitcoin.script.fromASM(workload.script);
+                                                                var chunks = this_script.slice(2);
+                                                                var redeemed_script = nwbs.bitcoin.script.multisig.output.decode(chunks, blockchain);
+                                                                var redeem_script = nwbs.bitcoin.script.multisig.output.encode(redeemed_script.m, redeemed_script.pubKeys);
+                                                                var signatures = 0;
+                                                                var tx_ready_to_be_sent = false;
+                                                                jQuery.each(new_tx.inputs, function(i)
+                                                                {
+                                                                    new_tx.sign(i, pkey, redeem_script);
+                                                                });
+                                                                if(typeof new_tx.inputs[0].signatures != 'undefined')
+                                                                {
+                                                                    jQuery.each(new_tx.inputs[0].signatures, function(i)
+                                                                    {
+                                                                        if(typeof new_tx.inputs[0].signatures[i] == 'object')
+                                                                        {
+                                                                            signatures++;
+                                                                        }
+                                                                    });
+                                                                }
+                                                                if(signatures >= needed)
+                                                                {
+                                                                    tx_ready_to_be_sent = true;
+                                                                }
+                                                                if(tx_ready_to_be_sent)
+                                                                {
+                                                                    var built = new_tx.build();
+                                                                    var raw_tx = built.toHex();
+                                                                    // action, callback, remote_url = false, raw = false, post = false
+                                                                    bce_web.api(
+                                                                        chain_to_check + 'p?method=relay&network='+workload.network,
+                                                                        function(relayed_tx)
+                                                                        {
+                                                                            if(
+                                                                                relayed_tx && jQuery.isPlainObject(relayed_tx)
+                                                                                && typeof relayed_tx.tx != 'undefined'
+                                                                                && typeof relayed_tx.tx.hash != 'undefined'
+                                                                                && relayed_tx.tx.hash
+                                                                            ){
+                                                                                recovery_response.success = true;
+                                                                                recovery_response.message = relayed_tx.tx.hash;
+                                                                                callback(recovery_response);
+                                                                            }
+                                                                            else if(
+                                                                                relayed_tx
+                                                                                && typeof relayed_tx.data != 'undefined'
+                                                                                && typeof relayed_tx.data.txid != 'undefined'
+                                                                            ){
+                                                                                recovery_response.success = true;
+                                                                                recovery_response.message = relayed_tx.data.txid;
+                                                                                callback(recovery_response);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                recovery_response.message = 'Unable to relay recovered transaction';
+                                                                                callback(recovery_response);
+                                                                            }
+                                                                        },
+                                                                        false,
+                                                                        false,
+                                                                        raw_tx
+                                                                    );
+                                                                }
+                                                                else
+                                                                {
+                                                                    recovery_response.message = 'Needs more than one additional signature';
+                                                                    callback(recovery_response);
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                recovery_response.message = 'Keys created do not match those linked to reeden script';
+                                                                callback(recovery_response);
+                                                            }
+                                                        }
+                                                    }
+                                                    else if(workload.chain == 'xrp')
+                                                    {
+                                                        // Need to check if keys match one of MS accounts ...
+                                                        // Also need to check if TX only missing one signature
+                                                        // If so - then sign and relay transaction ...
+                                                        if(
+                                                            typeof workload.script != 'undefined' 
+                                                            && typeof workload.tx != 'undefined'
+                                                        ){
+                                                            var tx_ready_to_be_sent = false;
 
-                                            var accounts = [];
+                                                            var currency = 'Ripple';
+                                                            var linked_key = keys.ripple.privateKey;
+                                                            var linked_address = keys.ripple.address;
 
-                                            for(c = 0; c < cortex_sdk_config.currencies.length; c++)
-                                            {
-                                                var id = cortex_sdk_config.currencies[c].id;
-                                                var address = multi_sig_keys.address;
-                                                var script = multi_sig_keys.redeem;
+                                                            var xrp_txid = workload.tx;
+                                                            var xrp_json = workload.script;
 
-                                                if(id == 'ethereum')
-                                                {
-                                                    script = false;
-                                                    address = app_eth_address;
-                                                }
-                                                if(id == 'ripple')
-                                                {
-                                                    script = false;
-                                                    address = app_xrp_address;
-                                                }
-                                                var account = {
-                                                    currency: cortex_sdk_config.currencies[c].name,
-                                                    symbol: cortex_sdk_config.currencies[c].symbol,
-                                                    decimals: cortex_sdk_config.currencies[c].decimals,
-                                                    address: address,
-                                                    script: script,
-                                                    txs: 0, // Need to get REAL data
-                                                    balances: {
-                                                        int: 0, // Need to get REAL data
-                                                        str: 0 // Need to get REAL data
+                                                            cortex.ux.loader(true, 'SIGNING');
+                                                            var ec = new ripple.EC('secp256k1');
+                                                            var raw_keys = ec.keyFromPrivate(linked_key);
+                                                            var pub = cortex_crypto_utils.bytesToHex(raw_keys.getPublic().encodeCompressed()); 
+                                                            var ms_address = ripple.Keys.deriveAddress(pub);
+
+
+                                                            var api = new ripple.RippleAPI(
+                                                            {
+                                                                server: ethereum_secrets.plugins.cortex.options.ripple[workload.network]
+                                                            });
+                                                            api.on('error', (errorCode, errorMessage) => 
+                                                            {
+
+                                                            });
+                                                            api.on('connected', () => 
+                                                            {
+                                                                var parsed_tx = JSON.parse(xrp_json);
+                                                                var amount = parseInt(parsed_tx.Amount);
+                                                                var keypair = { 
+                                                                    publicKey: pub,
+                                                                    privateKey: linked_key 
+                                                                };
+                                                                var tx = api.sign(xrp_json, keypair, {signAs: ms_address});
+                                                                if(typeof tx.signedTransaction != 'undefined')
+                                                                {
+                                                                    var txids = [];
+                                                                    var xrp_txids = [];
+                                                                    if(xrp_txid[0] == "{" || xrp_txid[0] == "[")
+                                                                    {
+                                                                        xrp_txids = JSON.parse(xrp_txid);
+                                                                    }
+
+                                                                    if(xrp_txids.length > 0)
+                                                                    {
+                                                                        for(i = 0; i < xrp_txids.length; i++)
+                                                                        {
+                                                                            txids.push(xrp_txids[i]);
+                                                                        }
+                                                                        txids.push(tx.signedTransaction);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        txids.push(xrp_txid);
+                                                                        txids.push(tx.signedTransaction);
+                                                                    }
+                                                                    
+                                                                    var shared_address = workload.from;
+                                                                    var addresses = [];
+                                                                    var needed = 0;
+                                                                    var signers = 0;
+                                                                    
+                                                                    api.getAccountObjects(shared_address).then(objects => 
+                                                                    {
+                                                                        if(
+                                                                            objects
+                                                                            && typeof objects.account_objects != 'undefined'
+                                                                            && jQuery.isArray(objects.account_objects)
+                                                                            && objects.account_objects.length > 0
+                                                                        ){
+                                                                            jQuery.each(objects.account_objects, function(i)
+                                                                            {
+                                                                                if(
+                                                                                    typeof objects.account_objects[i].LedgerEntryType != 'undefined'
+                                                                                    && typeof objects.account_objects[i].SignerEntries != 'undefined'
+                                                                                    && typeof objects.account_objects[i].SignerQuorum != 'undefined'
+                                                                                    && objects.account_objects[i].LedgerEntryType == 'SignerList'
+                                                                                ){
+                                                                                    signers = objects.account_objects[i].SignerEntries;
+                                                                                    needed = objects.account_objects[i].SignerQuorum;
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                        if(signers && needed)
+                                                                        {
+                                                                            var is_linked = false;
+                                                                            total = signers.length;
+                                                                            jQuery.each(signers, function(s)
+                                                                            {
+                                                                                if(signers[s].SignerEntry.Account == keys.ripple.address)
+                                                                                {
+                                                                                    is_linked = true;
+                                                                                }
+                                                                                addresses.push({address: signers[s].SignerEntry.Account});
+                                                                            });
+                                                                            if(is_linked)
+                                                                            {
+                                                                                if(txids.length == needed)
+                                                                                {
+                                                                                    var final_tx = api.combine(txids);
+                                                                                    api.submit(final_tx.signedTransaction).then(result => 
+                                                                                    {
+                                                                                        var txid = false;
+                                                                                        if(
+                                                                                            typeof result.tx_json != 'undefined'
+                                                                                            && typeof result.tx_json.hash != 'undefined'
+                                                                                            && typeof result.resultCode != 'undefined'
+                                                                                            && result.resultCode == 'tesSUCCESS'
+                                                                                        ){
+                                                                                            txid = result.tx_json.hash;
+                                                                                        }
+                                                                                        if(txid)
+                                                                                        {
+                                                                                            recovery_response.success = true;
+                                                                                            recovery_response.db = true;
+                                                                                            recovery_response.script = workload.script;
+                                                                                            recovery_response.tx = workload.tx;
+                                                                                            recovery_response.message = txid;
+                                                                                            callback(recovery_response);
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            recovery_response.message = 'Error sending final TX for XRP recovery';
+                                                                                            callback(recovery_response);
+                                                                                        }
+                                                                                    }).catch(error =>
+                                                                                    {
+                                                                                        recovery_response.message = 'Error processing XRP recovery: ' + error;
+                                                                                        callback(recovery_response);
+                                                                                    });
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    recovery_response.message = 'More than one addition XRP signature required';
+                                                                                    callback(recovery_response);
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                recovery_response.message = 'Not linked to this XRP account';
+                                                                                callback(recovery_response);
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                                else
+                                                                {
+                                                                    recovery_response.message = 'Unknown error initiating XRP MS recovery';
+                                                                    callback(recovery_response);
+                                                                }
+                                                            });
+                                                            api.on('disconnected', (code) => 
+                                                            {
+
+                                                            });
+                                                            api.connect();
+                                                        }
+                                                        else
+                                                        {
+                                                            recovery_response.message = 'Missing required MS parameters';
+                                                            callback(recovery_response);
+                                                        }
+                                                    }
+                                                    else if(workload.chain == 'eth')
+                                                    {
+                                                        // Need to check if keys match one of MS accounts ...
+                                                        // Also need to check if TX only missing one signature
+                                                        // If so - then sign and relay transaction ...
+                                                        var key = keys.ethereum.privateKey
+                                                        var from_address = keys.ethereum.address;
+
+                                                        if(EthJS.Util.isValidAddress(from_address))
+                                                        {
+                                                            cortex.ux.loader(true, 'SENDING');
+
+                                                            var contract = cortex_crypto_utils.contract(
+                                                                'MultisigWallet', 
+                                                                workload.network, 
+                                                                workload.from
+                                                            );
+
+                                                            var hex = contract.confirmTransaction.getData(
+                                                                "" + workload.txid + ""
+                                                            );
+                                                            var tx = {
+                                                                value: 0,
+                                                                key: key,
+                                                                from: from_address,
+                                                                to: contract.address,
+                                                                type: 'hex',
+                                                                hex: hex,
+                                                                contract: contract,
+                                                                address: contract.address,
+                                                                network: ethereum_secrets.plugins.cortex.options.ethereum[workload.network],
+                                                                raw: workload.txid
+                                                            };
+                                                            ethereum_ux.txs.send(tx, function(txid, err)
+                                                            {
+                                                                if(txid)
+                                                                {
+                                                                    recovery_response.success = true;
+                                                                    recovery_response.message = txid;
+                                                                    callback(recovery_response);
+                                                                }
+                                                                else
+                                                                {
+                                                                    recovery_response.message = 'Unknown error relaying ETH MS recovery transaction';
+                                                                    callback(recovery_response);
+                                                                }
+                                                            });
+                                                        }
+                                                        else
+                                                        {
+                                                            recovery_response.message = 'Not linked to this ETH MS account';
+                                                            callback(recovery_response);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        recovery_response.message = 'Unsupported chain';
+                                                        callback(recovery_response);
                                                     }
                                                 }
-                                                accounts.push(account);
-                                            }
-
-                                            var shared_hot_wallet = {
-                                                id: wallet_id,
-                                                uid: options.uid,
-                                                path: workload.wallet.path,
-                                                pathed: pathed,
-                                                network_type: workload.network,
-                                                accounts: accounts
-                                            };
-
-                                            var public_key = cortex_db.wallet.users[options.uid].key;
-                                            var seed = bitcoin.crypto.sha256(public_key).toString('hex');
-                                            var private_keys = cortex_sdk.keys(seed);
-                                            var keys = cortex_sdk.keys(private_keys.public_key);
-                                            var textBytes = aesjs.utils.utf8.toBytes(JSON.stringify(shared_hot_wallet));
-                                            var aesCtr = new aesjs.ModeOfOperation.ctr(keys.raw);
-                                            var encryptedBytes = aesCtr.encrypt(textBytes);
-                                            var encrypted_wallet = aesjs.utils.hex.fromBytes(encryptedBytes);
-
-                                            if(typeof callback == 'function') callback(encrypted_wallet);
-                                            else return encrypted_wallet;
-                                            
-                                            */
+                                            });  
                                         }
-                                    });  
+                                    );
                                 }
                             }
                             else
                             {
                                 if(response && typeof response.message != 'undefined')
                                 {
-                                    console.log('Holding error: ' + response.message);
+                                    recovery_response.message = 'Holding error: ' + response.message;
                                 }
+                                callback(recovery_response);
                             }
                         }
                     );
@@ -2399,13 +2662,15 @@ var cortex_sdk =
                     var wallet_salt = form.getElementsByClassName(cortex_sdk.classes.walletsalt)[0].value;
                     
                     // Need for Cortex UX
-                    var txid = form.getElementsByClassName(cortex_sdk.classes.txid)[0].value;;
-                    var from = form.getElementsByClassName(cortex_sdk.classes.from)[0].value;;
+                    var txid = form.getElementsByClassName(cortex_sdk.classes.txid)[0].value;
+                    var from = form.getElementsByClassName(cortex_sdk.classes.from)[0].value;
 
                     var agent_dnkey = form.getElementsByClassName(cortex_sdk.classes.appkey1)[0].value;
                     var app_dnkey = form.getElementsByClassName(cortex_sdk.classes.appkey2)[0].value;
                     var primary_trustee_dnkey = form.getElementsByClassName(cortex_sdk.classes.trustkey1)[0].value;
                     var secondary_trustee_dnkey = form.getElementsByClassName(cortex_sdk.classes.trustkey2)[0].value;
+                    
+                    var chain = form.getElementsByClassName(cortex_sdk.classes.currency)[0].value;
 
                     // Only proceed if minimum required fields are supplied ...
                     if(uid && network_type && email && password && agent_id && agent_dnkey && app_dnkey && primary_trustee_dnkey && secondary_trustee_dnkey && txid && from)
@@ -2441,6 +2706,9 @@ var cortex_sdk =
                             }
 
                             // And then?
+                            
+                            var script = form.getElementsByClassName(cortex_sdk.classes.script)[0].value;
+                            var tx = form.getElementsByClassName(cortex_sdk.classes.tx)[0].value;
 
                             var workload = {
                                 uid: uid,
@@ -2451,7 +2719,7 @@ var cortex_sdk =
                                 seed: credentials.seed,
                                 ts: now,
                                 request: {
-                                    agent: agent_id,
+                                    aid: agent_id,
                                     network: network_type,
                                     dnkeys: [
                                         agent_dnkey,
@@ -2459,7 +2727,12 @@ var cortex_sdk =
                                         primary_trustee_dnkey, 
                                         secondary_trustee_dnkey
                                     ],
-                                    path: select_path
+                                    path: select_path,
+                                    chain: chain,
+                                    script: script,
+                                    from: from,
+                                    txid: txid,
+                                    tx: tx
                                 }
                             };
 
@@ -2476,50 +2749,25 @@ var cortex_sdk =
                                             function(encrypted_response)
                                             {
                                                 // TODO - Functionalize this ...???
-                                                if(encrypted_response)
+                                                console.log('encrypted_response', encrypted_response);
+                                                if(encrypted_response && typeof encrypted_response.success != 'undefined' && encrypted_response.success === true)
                                                 {
-                                                    var seed = bitcoin.crypto.sha256(public_key).toString('hex');
-                                                    var private_keys = cortex_sdk.keys(seed);
-                                                    var keys = cortex_sdk.keys(private_keys.public_key);
-                                                    var encryptedBytes = aesjs.utils.hex.toBytes(encrypted_response);
-                                                    var aesCtr = new aesjs.ModeOfOperation.ctr(keys.raw);
-                                                    var decryptedBytes = aesCtr.decrypt(encryptedBytes);
-                                                    var decrypted_data = aesjs.utils.utf8.fromBytes(decryptedBytes);
-
-                                                    if(decrypted_data)
+                                                    if(chain == 'btc' || chain == 'ltc' || chain == 'xrp')
                                                     {
-                                                        var response = JSON.parse(decrypted_data);
-                                                        if(
-                                                            response
-                                                            && typeof response.id != 'undefined'
-                                                            && typeof response.path != 'undefined'
-                                                            && typeof response.accounts == 'object'
-                                                            && typeof response.network_type != 'undefined'
-                                                        ){
-                                                            // FOR UX
-                                                            response.txid = txid;
-                                                            response.from = from;
-                                                            // Now need to store hot wallet for UX ...?
-                                                            if(
-                                                                typeof cortex_sdk_callbacks == 'object'
-                                                                && typeof cortex_sdk_callbacks[callback] != 'undefined'
-                                                            ){
-                                                                cortex_sdk_callbacks[callback](response);
-                                                            }
-                                                        }
-                                                    }   
-                                                    else
-                                                    {
-                                                        if(
-                                                            typeof cortex_sdk_callbacks == 'object'
-                                                            && typeof cortex_sdk_callbacks[callback] != 'undefined'
-                                                        ){
-                                                            if(encrypted_response && typeof encrypted_response.message !='undefined')
-                                                            {
-                                                                cortex_sdk_callbacks[callback]('Invalid decryption: ' + encrypted_response.message);
-                                                            }
-                                                        }
+                                                        encrypted_response.db = true;
+                                                        encrypted_response.txid = txid;
+                                                        encrypted_response.from = from;
                                                     }
+                                                    else if(chain == 'eth')
+                                                    {
+                                                        encrypted_response.txid = txid;
+                                                    }
+                                                }
+                                                if(
+                                                    typeof cortex_sdk_callbacks == 'object'
+                                                    && typeof cortex_sdk_callbacks[callback] != 'undefined'
+                                                ){
+                                                    cortex_sdk_callbacks[callback](encrypted_response);
                                                 }
                                             }
                                         );
@@ -2789,92 +3037,6 @@ var cortex_sdk =
                                     }
                                 }
                             );
-                                            
-                            /*
-                                        cortex_sdk.actions.wallet.rebalance(
-                                            {uid: uid, workload: encrypted_workload, signature: signature},
-                                            'application_salt',
-                                            'wallet_salt',
-                                            function(encrypted_response)
-                                            {
-                                                if(encrypted_response && typeof encrypted_response.success != 'undefined' && encrypted_response.success === true)
-                                                {
-                                                    var raw_data = false;
-                                                    
-                                                    // Waiting for Azri to return real data ???
-                                                    
-                                                    //var encrypted_data = encrypted_response.rdata;
-                                                    raw_data = encrypted_response.message;
-                                                    
-                                                    if(raw_data)
-                                                    {
-                                                        // To be removed ...
-                                                        if(
-                                                            typeof cortex_sdk_callbacks == 'object'
-                                                            && typeof cortex_sdk_callbacks[callback] != 'undefined'
-                                                        ){
-                                                            cortex_sdk_callbacks[callback](raw_data);
-                                                        }
-                                                        else
-                                                        {
-                                                            return response;
-                                                        }
-                                                    }
-                                                    else if(encrypted_data)
-                                                    {
-                                                        var seed = bitcoin.crypto.sha256(public_key).toString('hex');
-                                                        var keys = cortex_sdk.keys(seed);
-                                                        var encryptedBytes = aesjs.utils.hex.toBytes(encrypted_data);
-                                                        var aesCtr = new aesjs.ModeOfOperation.ctr(keys.raw);
-                                                        var decryptedBytes = aesCtr.decrypt(encryptedBytes);
-                                                        var decrypted_data = aesjs.utils.utf8.fromBytes(decryptedBytes);
-                                                        if(decrypted_data)
-                                                        {
-                                                            var response = JSON.parse(decrypted_data);
-                                                            if(
-                                                                typeof cortex_sdk_callbacks == 'object'
-                                                                && typeof cortex_sdk_callbacks[callback] != 'undefined'
-                                                            ){
-                                                                cortex_sdk_callbacks[callback](response);
-                                                            }
-                                                            else
-                                                            {
-                                                                return response;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if(
-                                                        typeof cortex_sdk_callbacks == 'object'
-                                                        && typeof cortex_sdk_callbacks[callback] != 'undefined'
-                                                    ){
-                                                        cortex_sdk_callbacks[callback](encrypted_response);
-                                                    }
-                                                    else
-                                                    {
-                                                        return encrypted_response;
-                                                    }
-                                                }
-                                            }
-                                        );
-                                    }
-                                    else
-                                    {
-                                        holding_response.message = 'Unable to encrypt workload for shared hot wallet';
-                                        if(typeof cortex != 'undefined' && typeof cortex.ux != 'undefined')
-                                        {
-                                            cortex.ux.modals('Warning', holding_response.message);
-                                        }
-                                        else
-                                        {
-                                            alert('Warning: ' + holding_response.message);
-                                        }
-                                    }
-                                }
-                            );
-                            */
                         }
                         else
                         {
@@ -3091,10 +3253,10 @@ var cortex_sdk =
                     var amount = form.getElementsByClassName(cortex_sdk.classes.amount)[0].value;
                     var dnkey_app = form.getElementsByClassName(cortex_sdk.classes.mskeyapp)[0].value;
                     var dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
-                    var currency = form.getElementsByClassName(cortex_sdk.classes.currency)[0].value;
                     var path = form.getElementsByClassName(cortex_sdk.classes.path)[0].value;
                     var hidden_agent_id = form.getElementsByClassName(cortex_sdk.classes.agent)[0].value;
                     
+                    var currency = form.getElementsByClassName(cortex_sdk.classes.currency)[0].value;
                     var chain = false;
                     if(currency == 'Bitcoin') chain = 'btc';
                     else if(currency == 'Ethereum') chain = 'eth';
@@ -3226,6 +3388,8 @@ var cortex_sdk =
         message: 'cortex-form-message',
         txid: 'cortex-form-txid',
         from: 'cortex-form-from',
+        script: 'cortex-form-script',
+        tx: 'cortex-form-tx',
         msrecovery: 'cortex-recover-ms-tx-form',
         sweeping: 'cortex-sweep-deposit-addresses-form',
         withdraw: 'cortex-withdraw-custody-form',
@@ -3285,7 +3449,11 @@ var cortex_sdk =
     },
     init: function(evt = false)
     {
-        cortex_sdk.forms.init();
+        if(!cortex_sdk_initiated)
+        {
+            cortex_sdk_initiated = true;
+            cortex_sdk.forms.init();
+        }
     },
     keys: function(seed = false)
     {
