@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Recovery</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../js/aes.js'></script>
+    <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../js/jquery.js'></script>
+</head>
+<body>    
+    <nav class="navigation">
+        <a href="../registration/" class="btn btn-sm btn-xs btn-plain">REGISTER</a>
+        <a href="../deposit-and-sweeping/" class="btn btn-sm btn-xs btn-plain">DEPOSITS</a>
+        <a href="../holding/" class="btn btn-sm btn-xs btn-plain">HOLDING</a>
+        <a href="../custody-and-withdraw/" class="btn btn-sm btn-xs btn-plain">CUSTODY</a>
+        <a href="../rebalance/" class="btn btn-sm btn-xs btn-plain">REBALANCE</a>
+        <a href="" class="btn btn-sm btn-xs btn-primary">RECOVERY</a>
+    </nav>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Recover Multi-Signature Accounts</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- MSRECOVERY FORM -->
+                        <form class="form-horizontal cortex-recover-ms-tx-form">
+                        
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="msrecovery" />
+
+                            <!-- Needed for UX callback and usually hidden -->
+                            <div class="form-group">
+                                <label for="recover-ms-tx-chain" class="col-sm-4 control-label">
+                                    Currency
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="recover-ms-tx-chain" class="form-control cortex-form-currency">
+                                        <option value="btc">Bitcoin</option>
+                                        <option value="ltc">Litecoin</option>
+                                        <option value="eth">Ethereum</option>
+                                        <option value="xrp">Ripple</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="recover-ms-tx-network" class="form-control cortex-form-network">
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="recover-ms-tx-txid" class="col-sm-4 control-label">
+                                    TXID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-txid" class="form-control cortex-form-txid" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-from" class="col-sm-4 control-label">
+                                    From
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-from" class="form-control cortex-form-from" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-script" class="col-sm-4 control-label">
+                                    Script
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-script" class="form-control cortex-form-script" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-tx" class="col-sm-4 control-label">
+                                    TX
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-tx" class="form-control cortex-form-tx" />
+                                </div>
+                            </div>
+
+                            <!-- Included in regular UX -->
+                            <div class="form-group">
+                                <label for="recover-ms-tx-agent" class="col-sm-4 control-label">
+                                    Agent ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-agent" class="form-control cortex-form-agent" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="recover-ms-tx-path" class="col-sm-4 control-label">
+                                    Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-path" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="recover-ms-tx-dnkey1" class="col-sm-4 control-label">
+                                    Agent DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-dnkey1" class="form-control cortex-form-appkey1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-dnkey2" class="col-sm-4 control-label">
+                                    App User Key #2
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-dnkey2" class="form-control cortex-form-appkey2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-dnkey3" class="col-sm-4 control-label">
+                                    Trustee User Key #1
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-dnkey3" class="form-control cortex-form-trustkey1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-dnkey4" class="col-sm-4 control-label">
+                                    Trustee User Key #2
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-dnkey4" class="form-control cortex-form-trustkey2" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="recover-ms-tx-uid" class="col-sm-4 control-label">
+                                    User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-uid" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-email" class="col-sm-4 control-label">
+                                    Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="recover-ms-tx-email" class="form-control cortex-form-email-address" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="recover-ms-tx-password" class="col-sm-4 control-label">
+                                    Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="recover-ms-tx-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Recover User Accounts</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- WITHDRAW FORM -->
+                        <alert class="alert alert-block alert-info">IN PROGRESS</alert>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/examples.js'></script>
+    <script type='text/javascript' src='../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
+</body>
+</html>
