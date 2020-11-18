@@ -1275,7 +1275,7 @@ var cortex_sdk =
                     }
                 }
             },
-            register: function(options = {email: false, password: false}, uid = 0, salt = false, callback = false)
+            register: function(options = {email: false, password: false, index: 0}, uid = 0, salt = false, callback = false)
             {
                 var settings = {
                     "url": "https://sinegy.neuroware.io/v1/sinegy/register/",
@@ -1287,7 +1287,8 @@ var cortex_sdk =
                     "data": JSON.stringify({
                         "uid": uid,
                         "hashEmail": options.email,
-                        "hashPassword": options.password
+                        "hashPassword": options.password,
+                        "index": options.index
                     }),
                 };
                 jQuery.ajax(settings).done(function (res) 
@@ -2821,6 +2822,7 @@ var cortex_sdk =
                     // The salts and User ID, if provided - enables testing to be done locally ...
                     var app_salt = form.getElementsByClassName(cortex_sdk.classes.appsalt)[0].value;
                     var wallet_salt = form.getElementsByClassName(cortex_sdk.classes.walletsalt)[0].value;
+                    var user_index = form.getElementsByClassName(cortex_sdk.classes.index)[0].value;
                     
                     var callback = form.getElementsByClassName(cortex_sdk.classes.callback)[0].value;
 
@@ -2833,7 +2835,8 @@ var cortex_sdk =
                         cortex_sdk.actions.client.register(
                         {
                             email: hashed_email,
-                            password: hashed_password
+                            password: hashed_password,
+                            index: user_index
                         },
                         uid,
                         app_salt,
@@ -2863,7 +2866,8 @@ var cortex_sdk =
                                         "hashPassword": hashed_password,
                                         "secret": client_user.secret,
                                         "apiKey": api_key,
-                                        "pubKey": keys.public_key
+                                        "pubKey": keys.public_key,
+                                        "index": user_index
                                     })
                                 };
                                 jQuery.ajax(settings).done(function (response) 
@@ -2895,7 +2899,8 @@ var cortex_sdk =
                                             password: hashed_password,
                                             secret: client_user.secret,
                                             key: client_user.key,
-                                            pub: keys.public_key
+                                            pub: keys.public_key,
+                                            index: user_index
                                         };
 
                                         cortex_sdk.ux.users.add(user_to_store);
@@ -3142,6 +3147,8 @@ var cortex_sdk =
                             
                             if(path_array.length > 0 && user_array.length > 0)
                             {   
+                                var user_index = 0;
+                                // TODO - add dynamic user_index ...
                                 var workload = {
                                     uid: uid,
                                     apiKey: api_key,
@@ -3152,6 +3159,7 @@ var cortex_sdk =
                                     ts: now,
                                     request: {
                                         close_xrp: false,
+                                        index: user_index,
                                         network: network_type,
                                         agent: {
                                             dnkey: agent_dnkey
@@ -3290,6 +3298,7 @@ var cortex_sdk =
                                 ts: now,
                                 request: {
                                     aid: hidden_agent_id,
+                                    index: user_index,
                                     chain: chain,
                                     network: network_type,
                                     amount: amount,
@@ -3389,6 +3398,7 @@ var cortex_sdk =
         txid: 'cortex-form-txid',
         from: 'cortex-form-from',
         script: 'cortex-form-script',
+        index: 'cortex-form-user-index',
         tx: 'cortex-form-tx',
         msrecovery: 'cortex-recover-ms-tx-form',
         sweeping: 'cortex-sweep-deposit-addresses-form',
