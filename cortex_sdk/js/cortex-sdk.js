@@ -3122,6 +3122,13 @@ var cortex_sdk =
                     var agent_dnkey = form.getElementsByClassName(cortex_sdk.classes.appkey1)[0].value;
                     var ms_dnkey_app = form.getElementsByClassName(cortex_sdk.classes.mskeyapp)[0].value;
                     var ms_dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
+                    
+                    var close_xrp_accounts = false;
+                    if(form.getElementsByClassName(cortex_sdk.classes.closexrp)[0].value)
+                    {
+                        close_xrp_accounts = true;
+                    }
+                    
 
                     // Only proceed if minimum required fields are supplied ...
                     if(uid && network_type && email && password && uids && paths && agent_dnkey && ms_dnkey_app && ms_dnkey_trustee)
@@ -3163,7 +3170,7 @@ var cortex_sdk =
                                     seed: credentials.seed,
                                     ts: now,
                                     request: {
-                                        close_xrp: false,
+                                        close_xrp: close_xrp_accounts,
                                         index: user_index,
                                         network: network_type,
                                         agent: {
@@ -3403,6 +3410,7 @@ var cortex_sdk =
         message: 'cortex-form-message',
         txid: 'cortex-form-txid',
         from: 'cortex-form-from',
+        closexrp: 'cortex-form-closexrp',
         script: 'cortex-form-script',
         index: 'cortex-form-user-index',
         tx: 'cortex-form-tx',
