@@ -2747,6 +2747,10 @@ var cortex_sdk =
                                 {
                                     if(encrypted_workload && signature && public_key)
                                     {
+                                        console.log('uid', uid);
+                                        console.log('encrypted_workload', encrypted_workload);
+                                        console.log('signature', signature);
+                                        /*
                                         cortex_sdk.actions.wallet.msrecovery(
                                             {uid: uid, workload: encrypted_workload, signature: signature},
                                             'application_salt',
@@ -2776,6 +2780,7 @@ var cortex_sdk =
                                                 }
                                             }
                                         );
+                                        */
                                     }
                                 }
                             );
@@ -3122,6 +3127,7 @@ var cortex_sdk =
                     var agent_dnkey = form.getElementsByClassName(cortex_sdk.classes.appkey1)[0].value;
                     var ms_dnkey_app = form.getElementsByClassName(cortex_sdk.classes.mskeyapp)[0].value;
                     var ms_dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
+                    var specific_fee = form.getElementsByClassName(cortex_sdk.classes.agent)[0].fee;
                     
                     var close_xrp_accounts = false;
                     if(form.getElementsByClassName(cortex_sdk.classes.closexrp)[0].value)
@@ -3171,6 +3177,7 @@ var cortex_sdk =
                                     ts: now,
                                     request: {
                                         close_xrp: close_xrp_accounts,
+                                        specific_fee: specific_fee,
                                         index: user_index,
                                         network: network_type,
                                         agent: {
@@ -3276,6 +3283,7 @@ var cortex_sdk =
                     var dnkey_trustee = form.getElementsByClassName(cortex_sdk.classes.mskeytrust)[0].value;
                     var path = form.getElementsByClassName(cortex_sdk.classes.path)[0].value;
                     var hidden_agent_id = form.getElementsByClassName(cortex_sdk.classes.agent)[0].value;
+                    var specific_fee = form.getElementsByClassName(cortex_sdk.classes.agent)[0].fee;
                     
                     var currency = form.getElementsByClassName(cortex_sdk.classes.currency)[0].value;
                     var chain = false;
@@ -3311,6 +3319,7 @@ var cortex_sdk =
                                 ts: now,
                                 request: {
                                     aid: hidden_agent_id,
+                                    specific_fee: specific_fee,
                                     index: user_index,
                                     chain: chain,
                                     network: network_type,
@@ -3409,6 +3418,7 @@ var cortex_sdk =
         trustsign2: 'cortex-form-trustsign2',
         message: 'cortex-form-message',
         txid: 'cortex-form-txid',
+        fee: 'cortex-form-fee',
         from: 'cortex-form-from',
         closexrp: 'cortex-form-closexrp',
         script: 'cortex-form-script',
