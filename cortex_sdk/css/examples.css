@@ -54,3 +54,9 @@ body.cortex-loading:after {
     text-align: center;
     z-index: 9999999;
 }
+.col-md-3 .panel.fixed {
+    width: calc(1170px * 0.25 - 30px);
+}
+.panel.fixed {
+    position: fixed;
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Lookup</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../js/aes.js'></script>
+    <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../js/jquery.js'></script>
+</head>
+<body>    
+    <nav class="navigation">
+        <a href="../registration/" class="btn btn-sm btn-xs btn-plain">REGISTER</a>
+        <a href="../deposit-and-sweeping/" class="btn btn-sm btn-xs btn-plain">DEPOSITS</a>
+        <a href="../holding/" class="btn btn-sm btn-xs btn-plain">HOLDING</a>
+        <a href="../custody-and-withdraw/" class="btn btn-sm btn-xs btn-plain">CUSTODY</a>
+        <a href="../rebalance/" class="btn btn-sm btn-xs btn-plain">REBALANCE</a>
+        <a href="../recovery/" class="btn btn-sm btn-xs btn-plain">RECOVERY</a>
+        <a href="" class="btn btn-sm btn-xs btn-primary">LOOKUP</a>
+        <a href="../help/" class="btn btn-sm btn-xs btn-plain">HELP</a>
+    </nav>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Transaction History</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <alert class="alert alert-block alert-info">
+                            <p>Lookup an address in order to view its transaction history.</p>
+                            <p>Ethereum non-multisignature addresses <strong>DO NOT</strong> have a transaction history.</p>
+                        </alert>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Address Details</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <alert class="alert alert-block alert-info">WAITING FOR LOOKUP</alert>
+                        
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Search</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- SWEEP FORM -->
+                        <form class="form-horizontal cortex-lookup-form">
+
+                            <div class="form-group">
+                                <label for="cortex-lookup-address" class="col-sm-4 control-label">
+                                    Address
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-lookup-address" class="form-control cortex-form-address" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-lookup-chain" class="col-sm-4 control-label">
+                                    Currency
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-lookup-chain" class="form-control cortex-form-chain">
+                                        <option value="">-- Select Currency --</option>
+                                        <option value="btc">Bitcoin</option>
+                                        <option value="ltc">Litecoin</option>
+                                        <option value="eth">Ethereum</option>
+                                        <option value="xrp">Ripple</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-recovering-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-xl btn-primary">LOOKUP</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../js/examples.js'></script>
+    <script type='text/javascript' src='../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../js/cortex-sdk.js'></script>
+</body>
+</html>

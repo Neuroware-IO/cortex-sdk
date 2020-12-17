@@ -21,6 +21,8 @@
         <a href="../custody-and-withdraw/" class="btn btn-sm btn-xs btn-plain">CUSTODY</a>
         <a href="../rebalance/" class="btn btn-sm btn-xs btn-plain">REBALANCE</a>
         <a href="" class="btn btn-sm btn-xs btn-primary">RECOVERY</a>
+        <a href="../lookup/" class="btn btn-sm btn-xs btn-plain">LOOKUP</a>
+        <a href="../help/" class="btn btn-sm btn-xs btn-plain">HELP</a>
     </nav>
     <p>&nbsp;</p>
     <p>&nbsp;</p>
@@ -30,7 +32,7 @@
             <div class="col-md-7">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Recover Multi-Signature Accounts</h3>
+                        <h3 class="panel-title">Holding Recovery</h3>
                     </div>
                     <div class="panel-body padless">
                         
@@ -66,7 +68,7 @@
                                     </select>
                                 </div>
                             </div>
-                            
+                            <hr>
                             <div class="form-group">
                                 <label for="recover-ms-tx-txid" class="col-sm-4 control-label">
                                     TXID
@@ -99,7 +101,7 @@
                                     <input type="text" id="recover-ms-tx-tx" class="form-control cortex-form-tx" />
                                 </div>
                             </div>
-
+                            <hr>
                             <!-- Included in regular UX -->
                             <div class="form-group">
                                 <label for="recover-ms-tx-agent" class="col-sm-4 control-label">
@@ -165,6 +167,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="cortex-hot-user-index" class="col-sm-4 control-label">
+                                    Recovery Index
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-hot-user-index" class="form-control cortex-form-user-index" />
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="recover-ms-tx-email" class="col-sm-4 control-label">
                                     Email
                                 </label>
@@ -203,12 +213,6 @@
                         
                         <!-- RESET FORM -->
                         <form class="form-horizontal cortex-new-api-user-form">
-                            <alert class="alert alert-block alert-warning">
-                                <small>
-                                    This simulates the process of an existing user resetting their password within an external application, which in-turn needs to also generate new hot wallet user credentials.
-                                </small>
-                            </alert>
-                            <hr>
                             <input type="hidden" class="cortex-form-callback" value="register" />
                             <div class="form-group">
                                 <label for="cortex-hot-user-id" class="col-sm-4 control-label">
@@ -247,6 +251,158 @@
                             <input type="hidden" id="cortex-hot-app-salt" class="form-control cortex-form-application-salt" />
                             <input type="hidden" id="cortex-hot-wallet-salt" class="form-control cortex-form-wallet-salt" />
                             <hr>
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-block btn-xl btn-primary">SUBMIT</button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Custody Recovery</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <!-- SWEEP FORM -->
+                        <form class="form-horizontal cortex-recovering-form">
+
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="recovering" />
+
+                            <div class="form-group">
+                                <label for="cortex-recovering-agent-id" class="col-sm-4 control-label">
+                                    Agent ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-agent-id" class="form-control cortex-form-agent" />
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cortex-recovering-app-dnkey" class="col-sm-4 control-label">
+                                    Custody Key #1
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-app-dnkey" class="form-control cortex-form-mskeyapp2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-trust-dnkey" class="col-sm-4 control-label">
+                                    Custody Key #2
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-trust-dnkey" class="form-control cortex-form-mskeytrust2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-custody-path" class="col-sm-4 control-label">
+                                    Custody Path
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-custody-path" class="form-control cortex-form-path" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-app-dnkey" class="col-sm-4 control-label">
+                                    Holding Key #1
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-app-dnkey" class="form-control cortex-form-mskeyapp" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-trust-dnkey" class="col-sm-4 control-label">
+                                    Holding Key #2
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-trust-dnkey" class="form-control cortex-form-mskeytrust" />
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-recovering-user-index" class="col-sm-4 control-label">
+                                    Recovery Index
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-user-index" class="form-control cortex-form-user-index" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-close-xrp" class="col-sm-4 control-label">
+                                    Close XRP?
+                                </label>
+                                <div class="col-sm-8">
+                                    <select type="text" id="cortex-recovering-close-xrp" class="form-control cortex-form-closexrp">
+                                        <option value="">False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-fee" class="col-sm-4 control-label">
+                                    Specific Fee
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-fee" class="form-control cortex-form-fee" placeholder="Does not work with Ripple ..." />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-network" class="col-sm-4 control-label">
+                                    Network
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-recovering-network" class="form-control cortex-form-network">
+                                        <option value="">-- Select Network --</option>
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <hr>
+
+                            <div class="form-group">
+                                <label for="cortex-recovering-user-id" class="col-sm-4 control-label">
+                                    User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-dnkey" class="col-sm-4 control-label">
+                                    DN-Key
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-dnkey" class="form-control cortex-form-appkey1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-email" class="col-sm-4 control-label">
+                                    Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-recovering-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-recovering-password" class="col-sm-4 control-label">
+                                    Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-recovering-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+
+                            <hr>
+
                             <div class="row">
                                 <div class="col-md-6"></div>
                                 <div class="col-md-6">

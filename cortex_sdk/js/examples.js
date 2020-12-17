@@ -329,17 +329,72 @@ var cortex_sdk_callbacks =
             }
         }
         alert(alert_text);
+    },
+    recovering: function(response = false)
+    {
+        var contents = 'Unable to peform recovering action';
+        if(response && typeof response.message == 'object' && response.message.length > 0)
+        {
+            contents = 'Recovering Complete';
+            jQuery.each(response.message, function(i)
+            {
+                var this_btc_value = response.message[i].btc.message;
+                var this_eth_value = response.message[i].eth.message;
+                var this_xrp_value = response.message[i].xrp.message;
+                var this_ltc_value = response.message[i].ltc.message;
+                if(response.message[i].btc.txid) this_btc_value = response.message[i].btc.txid;
+                if(response.message[i].eth.txid) this_eth_value = response.message[i].eth.txid;
+                if(response.message[i].xrp.txid) this_xrp_value = response.message[i].xrp.txid;
+                if(response.message[i].ltc.txid) this_ltc_value = response.message[i].ltc.txid;
+
+                contents+= "\n";
+                contents+= "\n";
+                contents+= "BTC: " + this_btc_value + "\nAddress: " + response.message[i].btc.address;
+                contents+= "\n";
+                contents+= "\n";
+                contents+= "LTC: " + this_ltc_value + "\nAddress: " + response.message[i].ltc.address;
+                contents+= "\n";
+                contents+= "\n";
+                contents+= "ETH: " + this_eth_value + "\nAddress: " + response.message[i].eth.address;
+                contents+= "\n";
+                contents+= "\n";
+                contents+= "XRP: " + this_xrp_value + "\nAddress: " + response.message[i].xrp.address;
+            });
+            alert(contents);
+        }
+        else
+        {
+            alert(contents);
+        }
     }
 };
 
+var cortex_markdown_data = {
+    urls: {
+        api: "client.credence.app"
+    }
+}
+
 var cortex_sdk_ux = 
 {
+    html: function(html_input, data_input, element = '#cortex-html-wrapper')
+    {
+        var html = Mustache.render(html_input, data_input);
+        if(element) jQuery(element).html(html);
+        else return html;
+    },
     init: function()
     {
         var date = new Date().toString().split(' ');
         var message_to_sign = 'New Shared Hot Wallet on ' + date[0] + ' ' + date[1] + ' ' + date[2] + ' ' + date[3];
         var input = document.getElementById('cortex-hot-new-message');
         if(input) input.value = message_to_sign;
+    },
+    md: function(md, element = '#cortex-md-wrapper')
+    {
+        var markdown = new markdownit();
+        var html = markdown.render(md);
+        jQuery(element).html(html);
     }
 }
 

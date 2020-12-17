@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Credent Hot Wallet Examples | Help | Custody</title>
+    <link rel='dns-prefetch' href='//s.w.org' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../../css/bootstrap.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../../css/cortex.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../../css/examples.css' type='text/css' media='all' />
+    <script type='text/javascript' src='../../../js/aes.js'></script>
+    <script type='text/javascript' src='../../../js/ethereumjs-tx.js'></script>
+    <script type='text/javascript' src='../../../js/jquery.js'></script>
+    
+    <!-- ONLY NEEDED FOR STYLING INTERNAL DOCS -->
+    <script type='text/javascript' src='../../../js/mustache.js'></script>
+    <script type='text/javascript' src='../../../js/markdown.js'></script>
+</head>
+<body>    
+    <nav class="navigation">
+        <a href="../../registration/" class="btn btn-sm btn-xs btn-plain">REGISTER</a>
+        <a href="../../deposit-and-sweeping/" class="btn btn-sm btn-xs btn-plain">DEPOSITS</a>
+        <a href="../../holding/" class="btn btn-sm btn-xs btn-plain">HOLDING</a>
+        <a href="../../custody-and-withdraw/" class="btn btn-sm btn-xs btn-plain">CUSTODY</a>
+        <a href="../../rebalance/" class="btn btn-sm btn-xs btn-plain">REBALANCE</a>
+        <a href="../../recovery/" class="btn btn-sm btn-xs btn-plain">RECOVERY</a>
+        <a href="../../lookup/" class="btn btn-sm btn-xs btn-plain">LOOKUP</a>
+        <a href="" class="btn btn-sm btn-xs btn-primary">HELP</a>
+    </nav>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <div class="container">  
+        <div class="row">
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Hot Wallet SDK</h3>
+                    </div>
+                    <div class="panel-body padless" id="cortex-md-wrapper">
+                        
+                        <alert class="alert alert-block alert-warning">UNABLE TO FIND DOCUMENTATION</alert>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-default fixed">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Table of Contents</h3>
+                    </div>
+                    <div class="panel-body padless">
+                        
+                        <ul class="list-group">
+                            <a href="../" class="list-group-item">Introduction</a>
+                            <a href="../register/" class="list-group-item">Register</a>
+                            <a href="../deposits/" class="list-group-item">Deposits</a>
+                            <a href="../holding/" class="list-group-item">Holding</a>
+                            <a href="../lookup/" class="list-group-item">Custody</a>
+                            <a href="../rebalance/" class="list-group-item">Rebalance</a>
+                            <a href="../recovery/" class="list-group-item">Recovery</a>
+                            <a href="" class="list-group-item active">Lookup</a>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINAL SCRIPTS -->
+    <script type='text/javascript' src='../../../js/examples.js'></script>
+    <script type='text/javascript' src='../../../js/bitcoin.js'></script>
+    <script type='text/javascript' src='../../../js/cortex-sdk.js'></script>
+    <script>
+        jQuery.ajax({
+            url: window.location.href + '../../../docs/md/lookup/README.md',
+            dataType: 'html',
+            success: function(markdown)
+            {
+                if(markdown)
+                {
+                    var html = cortex_sdk_ux.html(markdown, cortex_markdown_data, false);
+                    cortex_sdk_ux.md(html);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
