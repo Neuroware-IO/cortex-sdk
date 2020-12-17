@@ -12,6 +12,7 @@
     <script type='text/javascript' src='../../js/aes.js'></script>
     <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
     <script type='text/javascript' src='../../js/jquery.js'></script>
+    <script type='text/javascript' src='../../js/mustache.js'></script>
 </head>
 <body>    
     <nav class="navigation">
@@ -29,29 +30,137 @@
     <p>&nbsp;</p>
     <div class="container">  
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Transaction History</h3>
                     </div>
                     <div class="panel-body padless">
                         
-                        <alert class="alert alert-block alert-info">
+                        <alert class="alert alert-block alert-info lookup-tx-history-alert">
                             <p>Lookup an address in order to view its transaction history.</p>
                             <p>Ethereum non-multisignature addresses <strong>DO NOT</strong> have a transaction history.</p>
                         </alert>
                         
+                        <div class="hidden lookup-tx-history">
+                        {{#explorer.address.got_txs}}
+                            {{#explorer.address.txs}}
+                                <alert class="alert alert-block {{#incoming}}alert-success{{/incoming}}{{^incoming}}alert-danger{{/incoming}}">
+                                    <table class="table cortex-table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    {{#incoming}}Incoming{{/incoming}}{{^incoming}}Outgoing{{/incoming}} Transaction | 
+                                                    Block: {{block}} | Confirmations: {{confirmations}}
+                                                </th>
+                                                <th>{{ago}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tr>
+                                            <td>TXID: {{txid}}</td>
+                                            <td>Value: {{value}}</td>
+                                        </tr>
+                                    </table>
+                                    {{#incoming}}
+                                    <table class="table cortex-table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Inputs From</th>
+                                                <th>TXID or Block Hash | Index</th>
+                                            </tr>
+                                        </thead>
+                                        <!--{{#ins}}-->
+                                        <tr>
+                                            <td><small><a href="explore?type=address&address={{from}}&network={{network}}&currency={{currency}}">{{from}}</a></small></td>
+                                            <td><small>{{id}} | {{index}}</small></td>
+                                        </tr>
+                                        <!--{{/ins}}-->
+                                    </table>
+                                    {{/incoming}}
+                                    {{#outgoing}}
+                                    <table class="table cortex-table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Fees: {{fees}} | Outputs To:</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <!--{{#outs}}-->
+                                        <tr>
+                                            <td><small><a href="explore?type=address&address={{to}}&network={{network}}&currency={{currency}}">{{to}}</a></small></td>
+                                            <td><small>{{amount}}</small></td>
+                                        </tr>
+                                        <!--{{/outs}}-->
+                                    </table>
+                                    {{/outgoing}}
+                                </alert>
+                                <hr>
+                            {{/explorer.address.txs}}
+                            <div class="row">
+                                <div class="col-md-6"><a href="#" class="btn btn-block btn-plain">PRINT</a></div>
+                                <div class="col-md-6"><a href="#" class="btn btn-block btn-primary">EXPORT</a></div>
+                            </div>
+                        {{/explorer.address.got_txs}}
+                        {{^explorer.address.got_txs}}
+                            <alert class="alert alert-block alert-warning">NO RESULTS</alert>
+                        {{/explorer.address.got_txs}}
+                        </div>
+                        
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Address Details</h3>
                     </div>
                     <div class="panel-body padless">
                         
-                        <alert class="alert alert-block alert-info">WAITING FOR LOOKUP</alert>
+                        <alert class="alert alert-block alert-info lookup-address-history-alert">WAITING FOR LOOKUP</alert>
+                        
+                        <div class="hidden lookup-address-history">
+                            {{#explorer}}
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="qr-holder" data-content="{{id}}"></div>
+                                </div>
+                                <div class="col-lg-9">
+                                    <table class="table cortex-table table-striped">
+                                        <tr>
+                                            <td>{{type}}</td>
+                                            <td>{{id}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Currency</td>
+                                            <td>{{currency}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Balance{{#address.got_pending}} / Unconfirmed{{/address.got_pending}}</td>
+                                            <td>{{address.balance}}{{#address.got_pending}} / {{address.got_pending}}{{/address.got_pending}}</td>
+                                        </tr>
+                                        <!--{{#address.received}}-->
+                                        <tr>
+                                            <td>Received</td>
+                                            <td>{{address.received}}</td>
+                                        </tr>
+                                        <!--{{/address.received}}-->
+                                        <tr>
+                                            <td>TX Count</td>
+                                            <td>{{address.tx_count}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6"><a href="#" class="btn btn-block btn-plain">PRINT</a></div>
+                                <div class="col-md-6"><a href="#" class="btn btn-block btn-primary">EXPORT</a></div>
+                            </div>
+                            {{/explorer}}
+                            {{^explorer}}
+                                <alert class="alert alert-block alert-warning">NO RESULTS</alert>
+                            {{/explorer}}
+                        </div>
                         
                     </div>
                 </div>

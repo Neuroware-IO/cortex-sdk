@@ -389,6 +389,50 @@ var cortex_sdk_ux =
         var message_to_sign = 'New Shared Hot Wallet on ' + date[0] + ' ' + date[1] + ' ' + date[2] + ' ' + date[3];
         var input = document.getElementById('cortex-hot-new-message');
         if(input) input.value = message_to_sign;
+        cortex_sdk_ux.lookup();
+    },
+    lookup: function()
+    {
+        jQuery('body').on('submit', 'form.cortex-lookup-form', function(e)
+        {
+            e.preventDefault();
+            var address = jQuery(this).find('.cortex-form-address').val();
+            var chain = jQuery(this).find('.cortex-form-chain').val();
+            var network = jQuery(this).find('.cortex-form-network').val();
+            if(address && chain && network)
+            {
+                var settings = {
+                    "url": cortex_sdk_config.apis.wallet + "../" + chain + "/transactions/",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                    "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "address": address,
+                        "network": network
+                    })
+                };
+                jQuery.ajax(settings).done(function (res) {
+                    if(res && typeof res.success != 'undefined' && res.success === true)
+                    {
+                        var tx_data = {
+                            explorer: res.rdata
+                        };
+                        var tx_html = jQuery('.lookup-tx-history').html();
+                        var html = cortex_sdk_ux.html(tx_html, tx_data, false);
+                        jQuery('.lookup-tx-history').html(html);
+                        jQuery('.lookup-tx-history').removeClass('hidden');
+                        jQuery('.lookup-tx-history-alert').addClass('hidden');
+                        var address_html = jQuery('.lookup-address-history').html();
+                        var addressed_html = cortex_sdk_ux.html(address_html, tx_data, false);
+                        jQuery('.lookup-address-history').html(addressed_html);
+                        jQuery('.lookup-address-history').removeClass('hidden');
+                        jQuery('.lookup-address-history-alert').addClass('hidden');
+                    }
+                });
+            }
+        })
     },
     md: function(md, element = '#cortex-md-wrapper')
     {
