@@ -60,3 +60,10 @@ body.cortex-loading:after {
 .panel.fixed {
     position: fixed;
 }
+
+table.table tbody td {
+    text-align: left;
+}
+table.table thead th:last-child {
+    text-align: right;
+}

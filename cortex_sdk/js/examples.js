@@ -401,6 +401,7 @@ var cortex_sdk_ux =
             var network = jQuery(this).find('.cortex-form-network').val();
             if(address && chain && network)
             {
+                jQuery('body').addClass('cortex-loading');
                 var settings = {
                     "url": cortex_sdk_config.apis.wallet + "../" + chain + "/transactions/",
                     "method": "POST",
@@ -419,16 +420,28 @@ var cortex_sdk_ux =
                         var tx_data = {
                             explorer: res.rdata
                         };
-                        var tx_html = jQuery('.lookup-tx-history').html();
+                        var tx_html = jQuery('.lookup-tx-history-hidden').html();
                         var html = cortex_sdk_ux.html(tx_html, tx_data, false);
                         jQuery('.lookup-tx-history').html(html);
                         jQuery('.lookup-tx-history').removeClass('hidden');
                         jQuery('.lookup-tx-history-alert').addClass('hidden');
-                        var address_html = jQuery('.lookup-address-history').html();
+                        var address_html = jQuery('.lookup-address-history-hidden').html();
                         var addressed_html = cortex_sdk_ux.html(address_html, tx_data, false);
                         jQuery('.lookup-address-history').html(addressed_html);
                         jQuery('.lookup-address-history').removeClass('hidden');
                         jQuery('.lookup-address-history-alert').addClass('hidden');
+                        jQuery('body').find('.qr-holder').each(function()
+                        {
+                            if(jQuery(this).find('img').length > 0)
+                            {
+                                jQuery(this).find('img').remove();
+                            }
+                            jQuery(this).qrcode({
+                                render: 'image',
+                                text: jQuery(this).attr('data-content')
+                            });
+                        });
+                        jQuery('body').removeClass('cortex-loading');
                     }
                 });
             }

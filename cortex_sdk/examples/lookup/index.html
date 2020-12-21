@@ -13,6 +13,7 @@
     <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
     <script type='text/javascript' src='../../js/jquery.js'></script>
     <script type='text/javascript' src='../../js/mustache.js'></script>
+    <script type='text/javascript' src='../../js/qrcode.js'></script>
 </head>
 <body>    
     <nav class="navigation">
@@ -42,7 +43,7 @@
                             <p>Ethereum non-multisignature addresses <strong>DO NOT</strong> have a transaction history.</p>
                         </alert>
                         
-                        <div class="hidden lookup-tx-history">
+                        <div class="hidden lookup-tx-history-hidden">
                         {{#explorer.address.got_txs}}
                             {{#explorer.address.txs}}
                                 <alert class="alert alert-block {{#incoming}}alert-success{{/incoming}}{{^incoming}}alert-danger{{/incoming}}">
@@ -57,7 +58,7 @@
                                             </tr>
                                         </thead>
                                         <tr>
-                                            <td>TXID: {{txid}}</td>
+                                            <td>TXID: <small>{{txid}}</small></td>
                                             <td>Value: {{value}}</td>
                                         </tr>
                                     </table>
@@ -71,8 +72,7 @@
                                         </thead>
                                         <!--{{#ins}}-->
                                         <tr>
-                                            <td><small><a href="explore?type=address&address={{from}}&network={{network}}&currency={{currency}}">{{from}}</a></small></td>
-                                            <td><small>{{id}} | {{index}}</small></td>
+                                            <td colspan="2" style="text-align: center"><small><a href="explore?type=address&address={{from}}&network={{network}}&currency={{currency}}">{{from}}</a></small><br /><small>{{id}} | {{index}}</small></td>
                                         </tr>
                                         <!--{{/ins}}-->
                                     </table>
@@ -105,6 +105,7 @@
                             <alert class="alert alert-block alert-warning">NO RESULTS</alert>
                         {{/explorer.address.got_txs}}
                         </div>
+                        <div class="hidden lookup-tx-history"></div>
                         
                     </div>
                 </div>
@@ -118,17 +119,17 @@
                         
                         <alert class="alert alert-block alert-info lookup-address-history-alert">WAITING FOR LOOKUP</alert>
                         
-                        <div class="hidden lookup-address-history">
+                        <div class="hidden lookup-address-history-hidden">
                             {{#explorer}}
                             <div class="row">
-                                <div class="col-lg-3">
-                                    <div class="qr-holder" data-content="{{id}}"></div>
+                                <div class="col-lg-12">
+                                    <div id="address-qr" class="qr-holder" data-content="{{id}}"></div>
                                 </div>
-                                <div class="col-lg-9">
+                                <div class="col-lg-12">
+                                    <br />
                                     <table class="table cortex-table table-striped">
                                         <tr>
-                                            <td>{{type}}</td>
-                                            <td>{{id}}</td>
+                                            <td colspan="2" style="text-align: center">Address:<br /><small>{{id}}</small></td>
                                         </tr>
                                         <tr>
                                             <td>Currency</td>
@@ -151,16 +152,12 @@
                                     </table>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6"><a href="#" class="btn btn-block btn-plain">PRINT</a></div>
-                                <div class="col-md-6"><a href="#" class="btn btn-block btn-primary">EXPORT</a></div>
-                            </div>
                             {{/explorer}}
                             {{^explorer}}
                                 <alert class="alert alert-block alert-warning">NO RESULTS</alert>
                             {{/explorer}}
                         </div>
+                        <div class="hidden lookup-address-history"></div>
                         
                     </div>
                 </div>
