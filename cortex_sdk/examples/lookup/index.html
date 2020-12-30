@@ -9,11 +9,13 @@
     <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
     <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
     <link rel='stylesheet' id='bootstrap-css'  href='../../css/examples.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap-css'  href='../../css/print.min.css' type='text/css' media='print' />
     <script type='text/javascript' src='../../js/aes.js'></script>
     <script type='text/javascript' src='../../js/ethereumjs-tx.js'></script>
     <script type='text/javascript' src='../../js/jquery.js'></script>
     <script type='text/javascript' src='../../js/mustache.js'></script>
     <script type='text/javascript' src='../../js/qrcode.js'></script>
+    <script type='text/javascript' src='../../js/print.min.js'></script>
 </head>
 <body>    
     <nav class="navigation">
@@ -30,7 +32,7 @@
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     <div class="container">  
-        <div class="row">
+        <div class="row" id="explorer-content-to-print">
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -38,12 +40,12 @@
                     </div>
                     <div class="panel-body padless">
                         
-                        <alert class="alert alert-block alert-info lookup-tx-history-alert">
+                        <alert class="alert alert-block alert-info lookup-tx-history-alert hide-from-print">
                             <p>Lookup an address in order to view its transaction history.</p>
                             <p>Ethereum non-multisignature addresses <strong>DO NOT</strong> have a transaction history.</p>
                         </alert>
                         
-                        <div class="hidden lookup-tx-history-hidden">
+                        <div class="hidden lookup-tx-history-hidden hide-from-print">
                         {{#explorer.address.got_txs}}
                             {{#explorer.address.txs}}
                                 <alert class="alert alert-block {{#incoming}}alert-success{{/incoming}}{{^incoming}}alert-danger{{/incoming}}">
@@ -96,9 +98,9 @@
                                 </alert>
                                 <hr>
                             {{/explorer.address.txs}}
-                            <div class="row">
-                                <div class="col-md-6"><a href="#" class="btn btn-block btn-plain">PRINT</a></div>
-                                <div class="col-md-6"><a href="#" class="btn btn-block btn-primary">EXPORT</a></div>
+                            <div class="row hide-from-print">
+                                <div class="col-md-6"><button class="btn btn-block btn-plain" onclick="printJS({printable:'explorer-content-to-print', type: 'html', style: 'hr, alert, div, table, table thead, table tbody, table thead tr, table tbody tr, table thead tr th, table tbody tr td { display: block; width: 100%; position: relative; padding: 0; margin: 0; font-family: sans-serif; } div { text-align: center; } a { color: #069; text-decoration: none;} hr, table, alert { padding: 2px 0; margin: 3px 0;} .hide-from-print { display: none !important;}'})">PRINT</button></div>
+                                <div class="col-md-6"><a href="https://sinegy.neuroware.io/v1/{{explorer.chain}}/transactions?address={{explorer.id}}&network={{explorer.network}}" target="_blank" class="btn btn-block btn-primary">REALTIME API</a></div>
                             </div>
                         {{/explorer.address.got_txs}}
                         {{^explorer.address.got_txs}}
@@ -117,9 +119,9 @@
                     </div>
                     <div class="panel-body padless">
                         
-                        <alert class="alert alert-block alert-info lookup-address-history-alert">WAITING FOR LOOKUP</alert>
+                        <alert class="alert alert-block alert-info lookup-address-history-alert hide-from-print">WAITING FOR LOOKUP</alert>
                         
-                        <div class="hidden lookup-address-history-hidden">
+                        <div class="hidden lookup-address-history-hidden hide-from-print">
                             {{#explorer}}
                             <div class="row">
                                 <div class="col-lg-12">
@@ -161,7 +163,7 @@
                         
                     </div>
                 </div>
-                <div class="panel panel-default">
+                <div class="panel panel-default hide-from-print">
                     <div class="panel-heading">
                         <h3 class="panel-title">Search</h3>
                     </div>
