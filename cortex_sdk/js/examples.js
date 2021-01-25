@@ -366,6 +366,122 @@ var cortex_sdk_callbacks =
         {
             alert(contents);
         }
+    },
+    notifications: function(res = false)
+    {
+        console.log('res', res);
+        var title = 'Warning';
+        var contents = 'Unknown error whilst performing notifications';
+        if(
+            res
+            && typeof res.success != 'undefined'
+            && res.success === true
+        )
+        {
+            var response = res.message;
+            if(
+                typeof response == 'object'
+                && typeof response.balance != 'undefined'
+                && typeof response.incomings == 'object'
+                && typeof response.lastUpdated != 'undefined'
+                && typeof response.outgoings == 'object'
+                && typeof response.tx_count != 'undefined'
+                && typeof response.address != 'undefined'
+                && typeof response.network != 'undefined'
+                && typeof response.currency != 'undefined'
+                && typeof response.chain  != 'undefined'
+            )
+            {
+                var these_txs = [];
+                var got_txs = false;
+                
+                if(response.tx_count > 0) got_txs = true;
+                if(response.incomings.length > 0)
+                {
+                    jQuery.each(response.incomings, function(ins){
+                        these_txs.push({
+                            txid: response.incomings[ins].txid,
+                            ts: response.incomings[ins].ts,
+                            ago: response.incomings[ins].ago,
+                            block: response.incomings[ins].block,
+                            confirmations: response.incomings[ins].confirmations,
+                            ins: response.incomings[ins].ins,
+                            outs: false,
+                            incoming: true,
+                            outgoing: false,
+                            value: response.incomings[ins].value,
+                            fees: 'N/A'
+                        });
+                    });
+                }
+                if(response.outgoings.length > 0)
+                {
+                    jQuery.each(response.outgoings, function(outs){
+                        these_txs.push({
+                            txid: response.outgoings[outs].txid,
+                            ts: response.outgoings[outs].ts,
+                            ago: response.outgoings[outs].ago,
+                            block: response.outgoings[outs].block,
+                            confirmations: response.outgoings[outs].confirmations,
+                            ins: false,
+                            outs: response.outgoings[outs].outs,
+                            incoming: false,
+                            outgoing: true,
+                            value: response.outgoings[outs].value,
+                            fees: response.outgoings[outs].fees
+                        });
+                    });
+                }
+                
+                these_txs.sort((a,b) => (a.block < b.block) ? 1 : ((b.block < a.block) ? -1 : 0));
+                
+                var tx_data = {
+                    explorer: {
+                        type: 'Address',
+                        id: response.address,
+                        network: response.network,
+                        currency: response.currency,
+                        chain: response.chain,
+                        updated: response.updated,
+                        address: {
+                            got_txs: got_txs,
+                            got_pending: false,
+                            pending: 0,
+                            balance: response.balance,
+                            received: 'N/A',
+                            tx_count: response.tx_count,
+                            txs: these_txs
+                        }
+                    }
+                };
+
+                var tx_html = jQuery('.lookup-tx-history-hidden').html();
+                var html = cortex_sdk_ux.html(tx_html, tx_data, false);
+                jQuery('.lookup-tx-history').html(html);
+                jQuery('.lookup-tx-history').removeClass('hidden');
+                jQuery('.lookup-tx-history-alert').addClass('hidden');
+                jQuery('body').find('.qr-holder').each(function()
+                {
+                    if(jQuery(this).find('img').length > 0)
+                    {
+                        jQuery(this).find('img').remove();
+                    }
+                    jQuery(this).qrcode({
+                        render: 'image',
+                        text: jQuery(this).attr('data-content')
+                    });
+                });
+                jQuery('body').removeClass('cortex-loading');
+            }
+        }
+        else
+        {
+            if(res && typeof res.message != 'undefined')
+            {
+                contents = res.message;
+            }
+            alert(title + ': ' + contents);
+        }
     }
 };
 

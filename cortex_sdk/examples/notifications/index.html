@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>Credent Hot Wallet Examples | Lookup</title>
+    <title>Credent Hot Wallet Examples | Notifications</title>
     <link rel='dns-prefetch' href='//s.w.org' />
     <link rel='stylesheet' id='bootstrap-css'  href='../../css/bootstrap.css' type='text/css' media='all' />
     <link rel='stylesheet' id='bootstrap-css'  href='../../css/cortex.css' type='text/css' media='all' />
@@ -25,8 +25,8 @@
         <a href="../custody-and-withdraw/" class="btn btn-sm btn-xs btn-plain">CUSTODY</a>
         <a href="../rebalance/" class="btn btn-sm btn-xs btn-plain">REBALANCE</a>
         <a href="../recovery/" class="btn btn-sm btn-xs btn-plain">RECOVERY</a>
-        <a href="" class="btn btn-sm btn-xs btn-primary">LOOKUP</a>
-        <a href="../notifications/" class="btn btn-sm btn-xs btn-plain">NOTIFICATIONS</a>
+        <a href="../lookup/" class="btn btn-sm btn-xs btn-plain">LOOKUP</a>
+        <a href="" class="btn btn-sm btn-xs btn-primary">NOTIFICATIONS</a>
         <a href="../help/" class="btn btn-sm btn-xs btn-plain">HELP</a>
     </nav>
     <p>&nbsp;</p>
@@ -37,16 +37,58 @@
             <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Transaction History</h3>
+                        <h3 class="panel-title">Notifications or State</h3>
                     </div>
                     <div class="panel-body padless">
                         
                         <alert class="alert alert-block alert-info lookup-tx-history-alert hide-from-print">
-                            <p>Lookup an address in order to view its transaction history.</p>
-                            <p>Ethereum non-multisignature addresses <strong>DO NOT</strong> have a transaction history.</p>
+                            <p>Track an address in order to get notifications.</p>
+                            <p>Addresses that have not been tracked <strong>DO NOT</strong> get notifications.</p>
+                            <hr>
+                            <p>Check the <code>state</code> of an address in order to store in cache.</p>
+                            <p>Please note that the state of an address can be manually refreshed using <code>reload</code>.</p>
+                            <p>Otherwise a <code>tracker</code> will automatically overwrite the state of an address as instructed.</p>
                         </alert>
                         
                         <div class="hidden lookup-tx-history-hidden hide-from-print">
+                        {{#explorer}}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="address-qr" class="qr-holder" data-content="{{id}}"></div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <hr>
+                                    <alert class="alert alert-block alert-warning">
+                                        <strong>Last Updated:</strong> {{updated}}
+                                    </alert>
+                                    <hr>
+                                    <table class="table cortex-table table-striped">
+                                        <tr>
+                                            <td colspan="2" style="text-align: center">Address:<br /><small>{{id}}</small></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Currency</td>
+                                            <td>{{currency}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Balance{{#address.got_pending}} / Unconfirmed{{/address.got_pending}}</td>
+                                            <td>{{address.balance}}{{#address.got_pending}} / {{address.got_pending}}{{/address.got_pending}}</td>
+                                        </tr>
+                                        <!--{{#address.received}}-->
+                                        <tr>
+                                            <td>Received</td>
+                                            <td>{{address.received}}</td>
+                                        </tr>
+                                        <!--{{/address.received}}-->
+                                        <tr>
+                                            <td>TX Count</td>
+                                            <td>{{address.tx_count}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr>
+                        {{/explorer}}
                         {{#explorer.address.got_txs}}
                             {{#explorer.address.txs}}
                                 <alert class="alert alert-block {{#incoming}}alert-success{{/incoming}}{{^incoming}}alert-danger{{/incoming}}">
@@ -114,79 +156,33 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Address Details</h3>
-                    </div>
-                    <div class="panel-body padless">
-                        
-                        <alert class="alert alert-block alert-info lookup-address-history-alert hide-from-print">WAITING FOR LOOKUP</alert>
-                        
-                        <div class="hidden lookup-address-history-hidden hide-from-print">
-                            {{#explorer}}
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div id="address-qr" class="qr-holder" data-content="{{id}}"></div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <br />
-                                    <table class="table cortex-table table-striped">
-                                        <tr>
-                                            <td colspan="2" style="text-align: center">Address:<br /><small>{{id}}</small></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Currency</td>
-                                            <td>{{currency}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Balance{{#address.got_pending}} / Unconfirmed{{/address.got_pending}}</td>
-                                            <td>{{address.balance}}{{#address.got_pending}} / {{address.got_pending}}{{/address.got_pending}}</td>
-                                        </tr>
-                                        <!--{{#address.received}}-->
-                                        <tr>
-                                            <td>Received</td>
-                                            <td>{{address.received}}</td>
-                                        </tr>
-                                        <!--{{/address.received}}-->
-                                        <tr>
-                                            <td>TX Count</td>
-                                            <td>{{address.tx_count}}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            {{/explorer}}
-                            {{^explorer}}
-                                <alert class="alert alert-block alert-warning">NO RESULTS</alert>
-                            {{/explorer}}
-                        </div>
-                        <div class="hidden lookup-address-history"></div>
-                        
-                    </div>
-                </div>
                 <div class="panel panel-default hide-from-print">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Search</h3>
+                        <h3 class="panel-title">Track</h3>
                     </div>
                     <div class="panel-body padless">
                         
-                        <!-- SWEEP FORM -->
-                        <form class="form-horizontal cortex-lookup-form">
+                        <!-- TRACK / NOTIFICATION FORM -->
+                        <form class="form-horizontal cortex-track-and-notify-form">
+                            
+                            <input type="hidden" class="cortex-form-application-salt" value="application_salt" />
+                            <input type="hidden" class="cortex-form-wallet-salt" value="wallet_salt" />
+                            <input type="hidden" class="cortex-form-callback" value="notifications" />
 
                             <div class="form-group">
-                                <label for="cortex-lookup-address" class="col-sm-4 control-label">
+                                <label for="cortex-track-notify-address" class="col-sm-4 control-label">
                                     Address
                                 </label>
                                 <div class="col-sm-8">
-                                    <input type="text" id="cortex-lookup-address" class="form-control cortex-form-address" />
+                                    <input type="text" id="cortex-track-notify-address" class="form-control cortex-form-address" />
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="cortex-lookup-chain" class="col-sm-4 control-label">
+                                <label for="cortex-track-notify-chain" class="col-sm-4 control-label">
                                     Currency
                                 </label>
                                 <div class="col-sm-8">
-                                    <select id="cortex-lookup-chain" class="form-control cortex-form-chain">
+                                    <select id="cortex-track-notify-chain" class="form-control cortex-form-currency">
                                         <option value="">-- Select Currency --</option>
                                         <option value="btc">Bitcoin</option>
                                         <option value="ltc">Litecoin</option>
@@ -196,11 +192,11 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="cortex-recovering-network" class="col-sm-4 control-label">
+                                <label for="cortex-track-notify-network" class="col-sm-4 control-label">
                                     Network
                                 </label>
                                 <div class="col-sm-8">
-                                    <select id="cortex-recovering-network" class="form-control cortex-form-network">
+                                    <select id="cortex-track-notify-network" class="form-control cortex-form-network">
                                         <option value="">-- Select Network --</option>
                                         <option value="public">Public</option>
                                         <option value="private">Private</option>
@@ -209,11 +205,70 @@
                             </div>
 
                             <hr>
+                            
+                            <div class="form-group">
+                                <label for="cortex-track-notify-status" class="col-sm-4 control-label">
+                                    Status
+                                </label>
+                                <div class="col-sm-8">
+                                    <select id="cortex-track-notify-status" class="form-control cortex-form-status">
+                                        <option value="">-- Select Action --</option>
+                                        <option value="state">Get State</option>
+                                        <option value="notifications">View Notifications</option>
+                                        <option value="activate">Activate Tracking</option>
+                                        <option value="deactivate">Deactivate Tracking</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-track-notify-reload" class="col-sm-4 control-label">
+                                    Reload
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-track-notify-reload" class="form-control cortex-form-reload" />
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="form-group">
+                                <label for="cortex-track-notify-user-id" class="col-sm-4 control-label">
+                                    User ID
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-track-notify-user-id" class="form-control cortex-form-user-id" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-track-notify-user-index" class="col-sm-4 control-label">
+                                    Index
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-track-notify-user-index" class="form-control cortex-form-user-index" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-track-notify-email" class="col-sm-4 control-label">
+                                    Email
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-track-notify-email" class="form-control cortex-form-email-address" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-track-notify-password" class="col-sm-4 control-label">
+                                    Password
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="cortex-track-notify-password" class="form-control cortex-form-password" />
+                                </div>
+                            </div>
+                            
+                            <hr>
 
                             <div class="row">
-                                <div class="col-md-6"></div>
-                                <div class="col-md-6">
-                                    <button type="submit" class="btn btn-block btn-xl btn-primary">LOOKUP</button>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-block btn-xl btn-primary">TRACK / NOTIFICATIONS</button>
                                 </div>
                             </div>
                         </form>
