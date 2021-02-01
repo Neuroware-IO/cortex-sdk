@@ -443,6 +443,7 @@ var cortex_sdk_callbacks =
                         currency: response.currency,
                         chain: response.chain,
                         updated: response.updated,
+                        updated_ago: jQuery.timeago(response.updated),
                         address: {
                             got_txs: got_txs,
                             got_pending: false,
@@ -455,6 +456,120 @@ var cortex_sdk_callbacks =
                     }
                 };
 
+                var tx_html = jQuery('.lookup-tx-history-hidden').html();
+                var html = cortex_sdk_ux.html(tx_html, tx_data, false);
+                jQuery('.lookup-tx-history').html(html);
+                jQuery('.lookup-tx-history').removeClass('hidden');
+                jQuery('.lookup-tx-history-alert').addClass('hidden');
+                jQuery('body').find('.qr-holder').each(function()
+                {
+                    if(jQuery(this).find('img').length > 0)
+                    {
+                        jQuery(this).find('img').remove();
+                    }
+                    jQuery(this).qrcode({
+                        render: 'image',
+                        text: jQuery(this).attr('data-content')
+                    });
+                });
+                jQuery('body').removeClass('cortex-loading');
+            }
+            else if(
+                response
+                && typeof response.callbackUrl != 'undefined'
+                && typeof response.currency != 'undefined'
+                && typeof response.conditions != 'undefined'
+                && typeof response.address != 'undefined'
+            )
+            {
+                if(response.status == 'active')
+                {
+                    title = 'Tracker Activated';
+                    var conditions = JSON.stringify(response.conditions);
+                    contents = response.currency + ' Address Tracker: ' + response.address + ' | Callback URL: ' + response.callbackUrl + ' | Conditions: ' + conditions;
+                    alert(contents);
+                }
+                else if(response.status == 'inactive')
+                {
+                    title = 'Tracker De-Activated';
+                    alert(title);
+                }
+            }
+            else if(
+                response
+                && typeof response.notifications == 'object'
+                && response.notifications.length > 0
+            ){
+                var tx_data = {
+                    explorer: []
+                };
+                jQuery.each(response.notifications, function(n)
+                {
+                    var this_notification = response.notifications[n];
+                    
+                    var these_txs = [];
+                    var got_txs = false;
+
+                    if(this_notification.tx_count > 0) got_txs = true;
+                    if(this_notification.incomings.length > 0)
+                    {
+                        jQuery.each(this_notification.incomings, function(ins){
+                            these_txs.push({
+                                txid: this_notification.incomings[ins].txid,
+                                ts: this_notification.incomings[ins].ts,
+                                ago: this_notification.incomings[ins].ago,
+                                block: this_notification.incomings[ins].block,
+                                confirmations: this_notification.incomings[ins].confirmations,
+                                ins: this_notification.incomings[ins].ins,
+                                outs: false,
+                                incoming: true,
+                                outgoing: false,
+                                value: this_notification.incomings[ins].value,
+                                fees: 'N/A'
+                            });
+                        });
+                    }
+                    if(this_notification.outgoings.length > 0)
+                    {
+                        jQuery.each(this_notification.outgoings, function(outs){
+                            these_txs.push({
+                                txid: this_notification.outgoings[outs].txid,
+                                ts: this_notification.outgoings[outs].ts,
+                                ago: this_notification.outgoings[outs].ago,
+                                block: this_notification.outgoings[outs].block,
+                                confirmations: this_notification.outgoings[outs].confirmations,
+                                ins: false,
+                                outs: this_notification.outgoings[outs].outs,
+                                incoming: false,
+                                outgoing: true,
+                                value: this_notification.outgoings[outs].value,
+                                fees: this_notification.outgoings[outs].fees
+                            });
+                        });
+                    }
+
+                    these_txs.sort((a,b) => (a.block < b.block) ? 1 : ((b.block < a.block) ? -1 : 0));
+
+                    tx_data.explorer.push({
+                        type: 'Address',
+                        id: this_notification.address,
+                        network: this_notification.network,
+                        currency: this_notification.currency,
+                        chain: this_notification.chain,
+                        updated: this_notification.ts,
+                        updated_ago: jQuery.timeago(this_notification.ts),
+                        address: {
+                            got_txs: got_txs,
+                            got_pending: false,
+                            pending: 0,
+                            balance: this_notification.balance,
+                            received: 'N/A',
+                            tx_count: this_notification.tx_count,
+                            txs: these_txs
+                        }
+                    });
+                });
+                
                 var tx_html = jQuery('.lookup-tx-history-hidden').html();
                 var html = cortex_sdk_ux.html(tx_html, tx_data, false);
                 jQuery('.lookup-tx-history').html(html);

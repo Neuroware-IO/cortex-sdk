@@ -2392,6 +2392,8 @@ var cortex_sdk =
                     var recovery_index = form.getElementsByClassName(cortex_sdk.classes.index)[0].value;
                     var status = form.getElementsByClassName(cortex_sdk.classes.status)[0].value;
                     var need_to_reload_bool = parseInt(form.getElementsByClassName(cortex_sdk.classes.reload)[0].value);
+                    var callback_url = form.getElementsByClassName(cortex_sdk.classes.callbackURL)[0].value;
+                    var conditions = form.getElementsByClassName(cortex_sdk.classes.json)[0].value;
 
                     // Only proceed if minimum required fields are supplied ...
                     if(uid && network_type && email && password && chain && address && status)
@@ -2435,6 +2437,22 @@ var cortex_sdk =
                             else if(status == 'activate' || status == 'deactivate')
                             {
                                 notification_end_point = 'tracker';
+                                if(status == 'activate')
+                                {
+                                    workload.request.status = 'active';
+                                }
+                                else if(status == 'deactivate')
+                                {
+                                    workload.request.status = 'inactive';
+                                }
+                                if(callback_url)
+                                {
+                                    workload.request.callbackUrl = callback_url;
+                                }
+                                if(conditions)
+                                {
+                                    workload.request.conditions = JSON.parse(conditions);
+                                }
                             }
                             else if(status == 'state')
                             {
@@ -2470,11 +2488,25 @@ var cortex_sdk =
                                             {
                                                 currency = 'Ripple';
                                             }
-                                            response.address = address;
-                                            response.network = network_type;
-                                            response.currency = currency;
-                                            response.chain = chain;
-                                            response.updated = response.lastUpdated;
+                                            if(status == 'notifications')
+                                            {
+                                                var notifications = JSON.parse(JSON.stringify(response));
+                                                response = {
+                                                    notifications: notifications,
+                                                    address: address,
+                                                    network: network_type,
+                                                    currency: currency,
+                                                    chain: chain
+                                                }
+                                            }
+                                            else
+                                            {
+                                                response.address = address;
+                                                response.network = network_type;
+                                                response.currency = currency;
+                                                response.chain = chain;
+                                                response.updated = response.lastUpdated;
+                                            }
                                             notification_response.success = true;
                                             notification_response.message = response;
                                             callback(notification_response);
@@ -3246,6 +3278,8 @@ var cortex_sdk =
         path: 'cortex-form-path',
         path2: 'cortex-form-path2',
         callback: 'cortex-form-callback',
+        callbackURL: 'cortex-form-callbackURL',
+        json: 'cortex-form-json',
         deposit: 'cortex-get-deposit-address-form',
         holding: 'cortex-get-holding-address-form',
         custody: 'cortex-get-custody-address-form',

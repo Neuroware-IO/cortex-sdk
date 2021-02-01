@@ -16,6 +16,7 @@
     <script type='text/javascript' src='../../js/mustache.js'></script>
     <script type='text/javascript' src='../../js/qrcode.js'></script>
     <script type='text/javascript' src='../../js/print.min.js'></script>
+    <script type='text/javascript' src='../../js/ago.js'></script>
 </head>
 <body>    
     <nav class="navigation">
@@ -59,7 +60,7 @@
                                 <div class="col-lg-12">
                                     <hr>
                                     <alert class="alert alert-block alert-warning">
-                                        <strong>Last Updated:</strong> {{updated}}
+                                        <strong>Last Updated:</strong> {{updated}} ({{updated_ago}})
                                     </alert>
                                     <hr>
                                     <table class="table cortex-table table-striped">
@@ -88,68 +89,70 @@
                                 </div>
                             </div>
                             <hr>
-                        {{/explorer}}
-                        {{#explorer.address.got_txs}}
-                            {{#explorer.address.txs}}
-                                <alert class="alert alert-block {{#incoming}}alert-success{{/incoming}}{{^incoming}}alert-danger{{/incoming}}">
-                                    <table class="table cortex-table table-striped">
-                                        <thead>
+                            {{#address.got_txs}}
+                                {{#address.txs}}
+                                    <alert class="alert alert-block {{#incoming}}alert-success{{/incoming}}{{^incoming}}alert-danger{{/incoming}}">
+                                        <table class="table cortex-table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        {{#incoming}}Incoming{{/incoming}}{{^incoming}}Outgoing{{/incoming}} Transaction | 
+                                                        Block: {{block}} | Confirmations: {{confirmations}}
+                                                    </th>
+                                                    <th>{{ago}}</th>
+                                                </tr>
+                                            </thead>
                                             <tr>
-                                                <th>
-                                                    {{#incoming}}Incoming{{/incoming}}{{^incoming}}Outgoing{{/incoming}} Transaction | 
-                                                    Block: {{block}} | Confirmations: {{confirmations}}
-                                                </th>
-                                                <th>{{ago}}</th>
+                                                <td>TXID: <small>{{txid}}</small></td>
+                                                <td>Value: {{value}}</td>
                                             </tr>
-                                        </thead>
-                                        <tr>
-                                            <td>TXID: <small>{{txid}}</small></td>
-                                            <td>Value: {{value}}</td>
-                                        </tr>
-                                    </table>
-                                    {{#incoming}}
-                                    <table class="table cortex-table table-striped">
-                                        <thead>
+                                        </table>
+                                        {{#incoming}}
+                                        <table class="table cortex-table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Inputs From</th>
+                                                    <th>TXID or Block Hash | Index</th>
+                                                </tr>
+                                            </thead>
+                                            <!--{{#ins}}-->
                                             <tr>
-                                                <th>Inputs From</th>
-                                                <th>TXID or Block Hash | Index</th>
+                                                <td colspan="2" style="text-align: center"><small><a href="explore?type=address&address={{from}}&network={{network}}&currency={{currency}}">{{from}}</a></small><br /><small>{{id}} | {{index}}</small></td>
                                             </tr>
-                                        </thead>
-                                        <!--{{#ins}}-->
-                                        <tr>
-                                            <td colspan="2" style="text-align: center"><small><a href="explore?type=address&address={{from}}&network={{network}}&currency={{currency}}">{{from}}</a></small><br /><small>{{id}} | {{index}}</small></td>
-                                        </tr>
-                                        <!--{{/ins}}-->
-                                    </table>
-                                    {{/incoming}}
-                                    {{#outgoing}}
-                                    <table class="table cortex-table table-striped">
-                                        <thead>
+                                            <!--{{/ins}}-->
+                                        </table>
+                                        {{/incoming}}
+                                        {{#outgoing}}
+                                        <table class="table cortex-table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fees: {{fees}} | Outputs To:</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <!--{{#outs}}-->
                                             <tr>
-                                                <th>Fees: {{fees}} | Outputs To:</th>
-                                                <th>Amount</th>
+                                                <td><small><a href="explore?type=address&address={{to}}&network={{network}}&currency={{currency}}">{{to}}</a></small></td>
+                                                <td><small>{{amount}}</small></td>
                                             </tr>
-                                        </thead>
-                                        <!--{{#outs}}-->
-                                        <tr>
-                                            <td><small><a href="explore?type=address&address={{to}}&network={{network}}&currency={{currency}}">{{to}}</a></small></td>
-                                            <td><small>{{amount}}</small></td>
-                                        </tr>
-                                        <!--{{/outs}}-->
-                                    </table>
-                                    {{/outgoing}}
-                                </alert>
+                                            <!--{{/outs}}-->
+                                        </table>
+                                        {{/outgoing}}
+                                    </alert>
+                                    <hr>
+                                {{/address.txs}}
+                                <div class="row hide-from-print">
+                                    <div class="col-md-6"><button class="btn btn-block btn-plain" onclick="printJS({printable:'explorer-content-to-print', type: 'html', style: 'hr, alert, div, table, table thead, table tbody, table thead tr, table tbody tr, table thead tr th, table tbody tr td { display: block; width: 100%; position: relative; padding: 0; margin: 0; font-family: sans-serif; } div { text-align: center; } a { color: #069; text-decoration: none;} hr, table, alert { padding: 2px 0; margin: 3px 0;} .hide-from-print { display: none !important;}'})">PRINT</button></div>
+                                    <div class="col-md-6"><a href="https://sinegy.neuroware.io/v1/{{explorer.chain}}/transactions?address={{explorer.id}}&network={{explorer.network}}" target="_blank" class="btn btn-block btn-primary">REALTIME API</a></div>
+                                </div>
                                 <hr>
-                            {{/explorer.address.txs}}
-                            <div class="row hide-from-print">
-                                <div class="col-md-6"><button class="btn btn-block btn-plain" onclick="printJS({printable:'explorer-content-to-print', type: 'html', style: 'hr, alert, div, table, table thead, table tbody, table thead tr, table tbody tr, table thead tr th, table tbody tr td { display: block; width: 100%; position: relative; padding: 0; margin: 0; font-family: sans-serif; } div { text-align: center; } a { color: #069; text-decoration: none;} hr, table, alert { padding: 2px 0; margin: 3px 0;} .hide-from-print { display: none !important;}'})">PRINT</button></div>
-                                <div class="col-md-6"><a href="https://sinegy.neuroware.io/v1/{{explorer.chain}}/transactions?address={{explorer.id}}&network={{explorer.network}}" target="_blank" class="btn btn-block btn-primary">REALTIME API</a></div>
-                            </div>
-                        {{/explorer.address.got_txs}}
-                        {{^explorer.address.got_txs}}
-                            <alert class="alert alert-block alert-warning">NO RESULTS</alert>
-                        {{/explorer.address.got_txs}}
+                            {{/address.got_txs}}
+                            {{^address.got_txs}}
+                                <alert class="alert alert-block alert-warning">NO RESULTS</alert>
+                            {{/address.got_txs}}
+                        {{/explorer}}
                         </div>
+                    
                         <div class="hidden lookup-tx-history"></div>
                         
                     </div>
@@ -203,12 +206,9 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <hr>
-                            
                             <div class="form-group">
                                 <label for="cortex-track-notify-status" class="col-sm-4 control-label">
-                                    Status
+                                    Function
                                 </label>
                                 <div class="col-sm-8">
                                     <select id="cortex-track-notify-status" class="form-control cortex-form-status">
@@ -220,12 +220,31 @@
                                     </select>
                                 </div>
                             </div>
+                            
+                            <hr>
+                            
                             <div class="form-group">
                                 <label for="cortex-track-notify-reload" class="col-sm-4 control-label">
                                     Reload
                                 </label>
                                 <div class="col-sm-8">
                                     <input type="text" id="cortex-track-notify-reload" class="form-control cortex-form-reload" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-track-notify-callback" class="col-sm-4 control-label">
+                                    Callback
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-track-notify-callback" class="form-control cortex-form-callbackURL" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cortex-track-notify-conditions" class="col-sm-4 control-label">
+                                    Conditions
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="cortex-track-notify-conditions" class="form-control cortex-form-json" />
                                 </div>
                             </div>
                             
