@@ -549,14 +549,17 @@ var cortex_sdk_callbacks =
                     }
 
                     these_txs.sort((a,b) => (a.block < b.block) ? 1 : ((b.block < a.block) ? -1 : 0));
+                    
+                    var ts = new Date(this_notification.ts).getTime();
 
                     tx_data.explorer.push({
                         type: 'Address',
-                        id: this_notification.address,
+                        id: false,
                         network: this_notification.network,
                         currency: this_notification.currency,
                         chain: this_notification.chain,
                         updated: this_notification.ts,
+                        ts: ts,
                         updated_ago: jQuery.timeago(this_notification.ts),
                         address: {
                             got_txs: got_txs,
@@ -569,6 +572,8 @@ var cortex_sdk_callbacks =
                         }
                     });
                 });
+                
+                tx_data.explorer.sort((a,b) => (a.ts < b.ts) ? 1 : ((b.ts < a.ts) ? -1 : 0));
                 
                 var tx_html = jQuery('.lookup-tx-history-hidden').html();
                 var html = cortex_sdk_ux.html(tx_html, tx_data, false);
@@ -587,6 +592,12 @@ var cortex_sdk_callbacks =
                     });
                 });
                 jQuery('body').removeClass('cortex-loading');
+            }
+            else
+            {
+                jQuery('.lookup-tx-history').html('');
+                jQuery('.lookup-tx-history').addClass('hidden');
+                jQuery('.lookup-tx-history-alert').removeClass('hidden');
             }
         }
         else
